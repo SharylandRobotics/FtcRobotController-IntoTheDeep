@@ -4,6 +4,7 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import java.util.ArrayList;
 import java.util.List;
 
 // LimeLight Trigonometry Distance Calculator
@@ -34,6 +35,7 @@ public class LLtdc {
     // measured parameters ---
     private double yPlaneRads;
     private double xPlaneRads;
+    private List<List<Double>> cornerPoints;
 
     // calculated parameters ---
     private double rawYcorrection;
@@ -95,7 +97,7 @@ public class LLtdc {
     }
 
     public void assessEnvironment(int recursionDepth){
-        limelight.captureSnapshot("try1");
+        limelight.captureSnapshot("try");
         List<LLResultTypes.DetectorResult> detectorResults = limelight.getLatestResult().getDetectorResults();
 
         if (!detectorResults.isEmpty()) { scanSuccessful = true;
@@ -127,7 +129,7 @@ public class LLtdc {
 
             yPlaneRads = Math.toRadians(closest.getTargetYDegrees());
             xPlaneRads = Math.toRadians(closest.getTargetXDegrees());
-
+            cornerPoints = closest.getTargetCorners();
 
         } else {
             recursionDepth--;
@@ -137,6 +139,7 @@ public class LLtdc {
             } else {
                 yPlaneRads = 0;
                 xPlaneRads = 0;
+                cornerPoints.clear(); cornerPoints.add(new ArrayList<Double>()); cornerPoints.get(0).add((double) 0);
             }
         }
     }
@@ -165,9 +168,9 @@ public class LLtdc {
         // clawYawCorrection will hold 0 until further build details are released.
         if (scanSuccessful) {
             formulateRobotCorrections();
-            returnObject = new TdcReturnObject(yawCorrection, xCorrection, yCorrection, armCorrection, 0);
+            returnObject = new TdcReturnObject(yawCorrection, xCorrection, yCorrection, armCorrection, 0, cornerPoints);
         } else {
-            returnObject = new TdcReturnObject(0,0,0,0,0);
+            returnObject = new TdcReturnObject(0,0,0,0,0, cornerPoints);
         }
     }
 

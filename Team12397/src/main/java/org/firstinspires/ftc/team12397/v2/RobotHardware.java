@@ -209,4 +209,9 @@ public class RobotHardware {
                 break;
         }
     }
+
+    public void setExtenderPosition(double offset){
+        leftExtend.setPosition(1.0- offset);
+        rightExtend.setPosition(0.0+ offset);
+    }
 }
