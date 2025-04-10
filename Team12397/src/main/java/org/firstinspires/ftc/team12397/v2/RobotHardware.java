@@ -2,10 +2,7 @@ package org.firstinspires.ftc.team12397.v2;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.*;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
@@ -34,6 +31,7 @@ public class RobotHardware {
 
     private DcMotor slideMotorL = null;
     private DcMotor slideMotorR = null;
+    private DcMotorEx slideExtender = null;
 
     private Servo leftExtend = null;
     private Servo rightExtend = null;
@@ -43,6 +41,10 @@ public class RobotHardware {
     private Servo outClaw = null;
 
 
+    public double EXTEND_SLIDE_TICKS_PER_REV = (((((1+(46./17))) * (1+(46./11))) * 28));
+    public double EXTEND_SLIDE_TICKS_PER_INCH = EXTEND_SLIDE_TICKS_PER_REV/ (112/25.4); // 112: https://www.gobilda.com/3407-series-hub-mount-winch-pulley-dual-spool-112mm-circumference/
+    // mm / 25.4 = in
+    public double EXTENDER_SLIDE_MAXIMUM_TICKS = EXTEND_SLIDE_TICKS_PER_INCH*17.5;
 
     IMU.Parameters parameters = new IMU.Parameters( new RevHubOrientationOnRobot(
             RevHubOrientationOnRobot.LogoFacingDirection.UP,
@@ -62,6 +64,7 @@ public class RobotHardware {
 
         slideMotorL = myOpMode.hardwareMap.get(DcMotor.class, "slide_motor_left");
         slideMotorR = myOpMode.hardwareMap.get(DcMotor.class, "slide_motor_right");
+        slideExtender = myOpMode.hardwareMap.get(DcMotorEx.class, "slide_extender");
 
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -70,6 +73,7 @@ public class RobotHardware {
 
         slideMotorL.setDirection(DcMotorSimple.Direction.FORWARD);
         slideMotorR.setDirection(DcMotorSimple.Direction.REVERSE);
+        slideExtender.setDirection(DcMotorSimple.Direction.FORWARD);
 
         leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -78,6 +82,7 @@ public class RobotHardware {
 
         slideMotorL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slideMotorR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slideExtender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -86,11 +91,14 @@ public class RobotHardware {
 
         slideMotorL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideMotorR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slideExtender.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        slideExtender.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
 
@@ -210,8 +218,14 @@ public class RobotHardware {
         }
     }
 
-    public void setExtenderPosition(double offset){
-        leftExtend.setPosition(1.0- offset);
-        rightExtend.setPosition(0.0+ offset);
+    /**
+     *
+     * This is NOT relative. Absolute distance from the starting point
+     * @param inches inches from the retracted position: another term could be absolute inches.
+     */
+    public void setExtenderPosition(double inches){
+        slideExtender.setTargetPosition((int) (inches*EXTEND_SLIDE_TICKS_PER_INCH));
+        slideExtender.setVelocity(2500);
+        slideExtender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 }

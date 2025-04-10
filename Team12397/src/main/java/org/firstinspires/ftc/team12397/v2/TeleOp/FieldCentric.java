@@ -16,6 +16,7 @@ public class FieldCentric extends LinearOpMode {
         double drive = 0;
         double strafe = 0;
         double turn = 0;
+        double extenderInches = 0;
 
         Gamepad luisL = gamepad1;
         Gamepad alexH = gamepad2;
@@ -30,6 +31,15 @@ public class FieldCentric extends LinearOpMode {
             turn = luisL.right_stick_x;
 
             robot.driveFieldCentric(drive, strafe, turn);
+
+            // if alex moves his left stick up/down more than a hundreth of maximum movement...
+            if (Math.round(alexH.left_stick_y*100) != 0){
+                // set target position to previous distance +/- fudge amount
+                extenderInches = extenderInches + alexH.left_stick_y*3.5;
+                // fudge amount is 3.5 inches: 1/5 of maximum reach.
+            }
+
+            robot.setExtenderPosition(extenderInches);
         }
     }
 
