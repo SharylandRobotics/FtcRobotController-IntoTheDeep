@@ -41,7 +41,7 @@ public class RobotHardware {
     private Servo outClaw = null;
 
 
-    public double ROTATE_SLIDE_TICKS_PER_DEGREE = 28.0 * ((double) 50/9) / 360.0;
+    public double ROTATE_SLIDE_TICKS_PER_DEGREE = (28.0 * 50.9 / 360.0) * (100.0 / 20.0);
     public double ROTATION_START = 0.0 * ROTATE_SLIDE_TICKS_PER_DEGREE;
     public double ROTATION_90 = 90 * ROTATE_SLIDE_TICKS_PER_DEGREE;
 
@@ -85,6 +85,8 @@ public class RobotHardware {
         slideMotorL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slideMotorR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        rotateMotor.setTargetPosition(0);
+        rotateMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rotateMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
