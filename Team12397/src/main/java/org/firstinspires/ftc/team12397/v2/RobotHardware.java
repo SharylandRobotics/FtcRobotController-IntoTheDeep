@@ -73,7 +73,9 @@ public class RobotHardware {
         rightBack.setDirection(DcMotorSimple.Direction.FORWARD);
 
         slideMotorL.setDirection(DcMotorSimple.Direction.FORWARD);
-        slideMotorR.setDirection(DcMotorSimple.Direction.REVERSE);
+
+
+        rotateMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         rotateMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
