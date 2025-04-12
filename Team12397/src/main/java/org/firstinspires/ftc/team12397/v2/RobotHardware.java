@@ -42,6 +42,15 @@ public class RobotHardware {
     private Servo outClaw = null;
 
 
+
+    public int leftFrontTarget;
+    public int leftBackTarget;
+    public int rightFrontTarget;
+    public int rightBackTarget;
+    public double COUNTS_PER_MOTOR_REV = 537.7;
+    public double WHEEL_DIAMETER_INCHES = 3.77953;
+    public double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV) / (WHEEL_DIAMETER_INCHES * Math.PI);
+
     public double ROTATE_SLIDE_TICKS_PER_DEGREE = (28.0 * 50.9 / 360.0) * (100.0 / 20.0);
     public double ROTATION_START = 0.0 * ROTATE_SLIDE_TICKS_PER_DEGREE;
     public double ROTATION_90 = 90 * ROTATE_SLIDE_TICKS_PER_DEGREE;
@@ -211,6 +220,56 @@ public class RobotHardware {
         leftBack.setPower(leftBackWheel);
         rightFront.setPower(rightFrontWheel);
         rightBack.setPower(rightBackWheel);
+    }
+
+    public void driveEncoder(double speed, double leftFrontInches, double leftBackInches, double rightFrontInches, double rightBackInches){
+        // drives only while myOpMode is active
+        if(myOpMode.opModeIsActive()){
+
+
+            //determine new target position
+            leftFrontTarget = leftFront.getCurrentPosition() + (int)(leftFrontInches * COUNTS_PER_INCH);
+            leftBackTarget = leftBack.getCurrentPosition() + (int)(leftBackInches * COUNTS_PER_INCH);
+            rightFrontTarget = rightFront.getCurrentPosition() + (int)(rightFrontInches * COUNTS_PER_INCH);
+            rightBackTarget = rightBack.getCurrentPosition() + (int)(rightBackInches * COUNTS_PER_INCH);
+
+            leftFront.setTargetPosition(leftFrontTarget);
+            leftBack.setTargetPosition(leftBackTarget);
+            rightFront.setTargetPosition(rightFrontTarget);
+            rightBack.setTargetPosition(rightBackTarget);
+
+            //turn on RUN_TO_POSITION
+            leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the time and start motion
+
+            runtime.reset();
+            setDrivePower(Math.abs(speed), Math.abs(speed), Math.abs(speed), Math.abs(speed));
+
+            while ((myOpMode.opModeIsActive() &&
+                    (leftFront.isBusy() && leftBack.isBusy() &&
+                            rightFront.isBusy() && rightBack.isBusy()))){
+
+                //display it for driver
+
+                myOpMode.telemetry.addData("Running to ", " %7d :%7d :%7d :%7d",
+                        leftFront, leftBack, rightFront, rightBack);
+                myOpMode.telemetry.addData("Currently at ", "%7d ;%7d :%7d :%7d",
+                        leftFront.getCurrentPosition(), leftBack.getCurrentPosition(),
+                        rightFront.getCurrentPosition(), rightBack.getCurrentPosition());
+                myOpMode.telemetry.update();
+            }
+
+            setDrivePower(0, 0, 0, 0 );
+            leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        }
     }
 
 
