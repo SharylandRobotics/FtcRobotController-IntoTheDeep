@@ -28,9 +28,6 @@ public class RobotHardware {
     private DcMotor rightFront = null;
     private DcMotor rightBack = null;
 
-
-    private DcMotor slideMotorL = null;
-    private DcMotor slideMotorR = null;
     private DcMotor rotateMotor = null;
     private DcMotorEx slideExtender = null;
 
@@ -61,8 +58,8 @@ public class RobotHardware {
     public double EXTENDER_SLIDE_MAXIMUM_TICKS = EXTEND_SLIDE_TICKS_PER_INCH*17.5;
 
     IMU.Parameters parameters = new IMU.Parameters( new RevHubOrientationOnRobot(
-            RevHubOrientationOnRobot.LogoFacingDirection.UP,
-            RevHubOrientationOnRobot.UsbFacingDirection.LEFT));
+            RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+            RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
 
 
     public RobotHardware(LinearOpMode OpMode) {myOpMode = OpMode;}
@@ -76,9 +73,6 @@ public class RobotHardware {
         rightFront = myOpMode.hardwareMap.get(DcMotor.class, "right_front");
         rightBack = myOpMode.hardwareMap.get(DcMotor.class, "right_back");
 
-        slideMotorL = myOpMode.hardwareMap.get(DcMotor.class, "slide_motor_left");
-        slideMotorR = myOpMode.hardwareMap.get(DcMotor.class, "slide_motor_right");
-
         slideExtender = myOpMode.hardwareMap.get(DcMotorEx.class, "slide_extender");
         rotateMotor = myOpMode.hardwareMap.get(DcMotor.class, "rotate_motor");
 
@@ -87,9 +81,6 @@ public class RobotHardware {
         rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
         rightBack.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        slideMotorL.setDirection(DcMotorSimple.Direction.FORWARD);
-        slideMotorR.setDirection(DcMotorSimple.Direction.REVERSE);
-
         rotateMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         slideExtender.setDirection(DcMotorSimple.Direction.FORWARD);
 
@@ -97,9 +88,6 @@ public class RobotHardware {
         leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        slideMotorL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slideMotorR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         rotateMotor.setTargetPosition(0);
         rotateMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -114,9 +102,6 @@ public class RobotHardware {
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        slideMotorL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        slideMotorR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
         rotateMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideExtender.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -130,12 +115,12 @@ public class RobotHardware {
 
 
 
-        leftExtend = myOpMode.hardwareMap.get(Servo.class, "leftExtend");
-        rightExtend = myOpMode.hardwareMap.get(Servo.class, "rightExtend");
-        inClawPitch = myOpMode.hardwareMap.get(Servo.class, "inClawPitch");
-        inClaw = myOpMode.hardwareMap.get(Servo.class, "inClaw");
-        getInClawYaw = myOpMode.hardwareMap.get(Servo.class, "getInClawYaw");
-        outClaw = myOpMode.hardwareMap.get(Servo.class, "outClaw");
+//        leftExtend = myOpMode.hardwareMap.get(Servo.class, "leftExtend");
+//        rightExtend = myOpMode.hardwareMap.get(Servo.class, "rightExtend");
+//        inClawPitch = myOpMode.hardwareMap.get(Servo.class, "inClawPitch");
+//        inClaw = myOpMode.hardwareMap.get(Servo.class, "inClaw");
+//        getInClawYaw = myOpMode.hardwareMap.get(Servo.class, "getInClawYaw");
+//        outClaw = myOpMode.hardwareMap.get(Servo.class, "outClaw");
 
         imu = myOpMode.hardwareMap.get(IMU .class, "imu");
         IMU.Parameters parameters = new IMU.Parameters( new RevHubOrientationOnRobot(
@@ -289,28 +274,28 @@ public class RobotHardware {
     }
 
     // placeholder
-    public void setServoPosition(int servoNum, double position){
-        switch (servoNum) {
-            case 0:
-                leftExtend.setPosition(position);
-                break;
-            case 1:
-                rightExtend.setPosition(position);
-                break;
-            case 2:
-                inClawPitch.setPosition(position);
-                break;
-            case 3:
-                inClaw.setPosition(position);
-                break;
-            case 4:
-                getInClawYaw.setPosition(position);
-                break;
-            case 5:
-                outClaw.setPosition(position);
-                break;
-        }
-    }
+//    public void setServoPosition(int servoNum, double position){
+//        switch (servoNum) {
+//            case 0:
+//                leftExtend.setPosition(position);
+//                break;
+//            case 1:
+//                rightExtend.setPosition(position);
+//                break;
+//            case 2:
+//                inClawPitch.setPosition(position);
+//                break;
+//            case 3:
+//                inClaw.setPosition(position);
+//                break;
+//            case 4:
+//                getInClawYaw.setPosition(position);
+//                break;
+//            case 5:
+//                outClaw.setPosition(position);
+//                break;
+//        }
+//    }
 
     /**
      *
