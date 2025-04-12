@@ -31,6 +31,7 @@ public class RobotHardware {
 
     private DcMotor slideMotorL = null;
     private DcMotor slideMotorR = null;
+    private DcMotor rotateMotor = null;
     private DcMotorEx slideExtender = null;
 
     private Servo leftExtend = null;
@@ -40,6 +41,10 @@ public class RobotHardware {
     private Servo getInClawYaw = null;
     private Servo outClaw = null;
 
+
+    public double ROTATE_SLIDE_TICKS_PER_DEGREE = (28.0 * 50.9 / 360.0) * (100.0 / 20.0);
+    public double ROTATION_START = 0.0 * ROTATE_SLIDE_TICKS_PER_DEGREE;
+    public double ROTATION_90 = 90 * ROTATE_SLIDE_TICKS_PER_DEGREE;
 
     public double EXTEND_SLIDE_TICKS_PER_REV = (((((1+(46./17))) * (1+(46./11))) * 28));
     public double EXTEND_SLIDE_TICKS_PER_INCH = EXTEND_SLIDE_TICKS_PER_REV/ (112/25.4); // 112: https://www.gobilda.com/3407-series-hub-mount-winch-pulley-dual-spool-112mm-circumference/
@@ -64,7 +69,9 @@ public class RobotHardware {
 
         slideMotorL = myOpMode.hardwareMap.get(DcMotor.class, "slide_motor_left");
         slideMotorR = myOpMode.hardwareMap.get(DcMotor.class, "slide_motor_right");
+
         slideExtender = myOpMode.hardwareMap.get(DcMotorEx.class, "slide_extender");
+        rotateMotor = myOpMode.hardwareMap.get(DcMotor.class, "rotate_motor");
 
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -73,6 +80,8 @@ public class RobotHardware {
 
         slideMotorL.setDirection(DcMotorSimple.Direction.FORWARD);
         slideMotorR.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        rotateMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         slideExtender.setDirection(DcMotorSimple.Direction.FORWARD);
 
         leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -82,6 +91,13 @@ public class RobotHardware {
 
         slideMotorL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slideMotorR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        rotateMotor.setTargetPosition(0);
+        rotateMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rotateMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        slideExtender.setTargetPosition(0);
+        slideExtender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideExtender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -91,6 +107,8 @@ public class RobotHardware {
 
         slideMotorL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideMotorR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        rotateMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideExtender.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -192,6 +210,16 @@ public class RobotHardware {
         leftBack.setPower(leftBackWheel);
         rightFront.setPower(rightFrontWheel);
         rightBack.setPower(rightBackWheel);
+    }
+
+
+    public void RotateSlides(double rotatePosition){
+        rotateMotor.setTargetPosition((int)(rotatePosition));
+
+        ((DcMotorEx) rotateMotor).setVelocity(2500);
+
+        rotateMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
     }
 
     // placeholder
