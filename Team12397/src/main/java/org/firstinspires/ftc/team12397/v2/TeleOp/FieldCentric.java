@@ -19,6 +19,8 @@ public class FieldCentric extends LinearOpMode {
         double extenderInches = 0;
         double slideRotation = 0;
 
+        double slideRotation = 0;
+
         Gamepad luisL = gamepad1;
         Gamepad alexH = gamepad2;
 

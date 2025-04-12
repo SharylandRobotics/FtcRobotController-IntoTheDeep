@@ -95,7 +95,7 @@ public class RobotHardware {
         rotateMotor.setTargetPosition(0);
         rotateMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rotateMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
+      
         slideExtender.setTargetPosition(0);
         slideExtender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideExtender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -110,6 +110,7 @@ public class RobotHardware {
 
         rotateMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideExtender.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
         leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
