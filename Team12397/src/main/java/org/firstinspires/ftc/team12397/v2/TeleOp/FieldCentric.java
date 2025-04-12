@@ -13,12 +13,12 @@ public class FieldCentric extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        double drive = 0;
-        double strafe = 0;
-        double turn = 0;
-        double extenderInches = 0;
+        double drive;
+        double strafe;
+        double turn;
+        double extenderInches;
 
-        double rotation = 0;
+        double rotationDegrees = 0;
 
         Gamepad luisL = gamepad1;
         Gamepad alexH = gamepad2;
@@ -33,24 +33,27 @@ public class FieldCentric extends LinearOpMode {
             turn = luisL.right_stick_x;
 
 
-            robot.driveFieldCentric(drive, strafe, turn);
-
             if(alexH.y){
-                rotation = robot.ROTATION_START;
+                rotationDegrees = 0;
             } else if (alexH.a){
-                rotation = robot.ROTATION_90;
+                rotationDegrees = 90;
             }
-
-            robot.RotateSlides(rotation);
 
 
             // if alex moves his left stick up/down more than a hundreth of maximum movement...
             if (Math.round(-alexH.left_stick_y*100) != 0){
                 // set target position to previous distance +/- fudge amount
+                extenderInches = robot.slideExtender.getCurrentPosition();
                 extenderInches = extenderInches + alexH.left_stick_y*1.5;
                 // fudge amount is 3.5 inches: 1/5 of maximum reach.
+            } else {
+                // if alex DOES NOT move his left stick, stop arm at current position.
+                extenderInches = robot.slideExtender.getCurrentPosition();
             }
 
+            // action lines (lines of code that actually move the robot)
+            robot.driveFieldCentric(drive, strafe, turn);
+            robot.RotateSlides(rotationDegrees);
             robot.setExtenderPosition(extenderInches);
 
             sleep(20);
