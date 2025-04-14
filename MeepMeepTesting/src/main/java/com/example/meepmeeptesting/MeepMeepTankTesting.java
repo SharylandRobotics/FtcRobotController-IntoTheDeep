@@ -12,102 +12,72 @@ public class MeepMeepTankTesting {
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
-                .setConstraints(50, 50, Math.PI, Math.PI, 15.5)
+                .setConstraints(95, 95, 3.2, 3.6, 15.75)
+                .setDimensions(15.75,17.25)
                 .build();
 
-        // Alliance Push Samples
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(9.5, -61.25, -Math.PI / 2 ))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(10, -61.875, Math.PI / 2 ))
+
+                // score FIRST SPECIMEN
                 .lineToY(-34)
-                .setTangent(0)
-                .lineToX(36)
-                .setTangent(Math.PI / 2)
-                .splineToConstantHeading(new Vector2d(46, -9), 0)
+                .setTangent(-Math.PI /8)
+
+                // swerve around beam
+                .splineToConstantHeading(new Vector2d(35.25, -31.125), Math.PI/3)
+                .waitSeconds(0)
+
+                .setTangent(Math.PI/3)//cont
+                .splineToLinearHeading(new Pose2d(new Vector2d(43.375, -8.625), Math.PI*1.5), -Math.PI/2)
+                .waitSeconds(0)
+
+
+                .lineToYConstantHeading(-47)
+                .waitSeconds(0)
+                .splineToConstantHeading(new Vector2d(52.375, -8.625), -Math.PI/2)
+                .waitSeconds(0)
+                .lineToYConstantHeading(-47)
+                .waitSeconds(0)
+                .splineToConstantHeading(new Vector2d(61.875, -8.625), -Math.PI/2)
+                .waitSeconds(0)
+                .lineToYConstantHeading(-49)
+                .setTangent(5 * Math.PI / 6)
+
+                // move and turn to intake specimen
+                .splineToLinearHeading(new Pose2d(47, -54, -Math.PI / 4), Math.PI)
+
+                // score SECOND SPECIMEN
+                .setTangent(Math.PI)
+                .splineToLinearHeading(new Pose2d(15, -31.125, Math.PI/2), Math.PI/2)
+
+                // move to STAGING POSITION
                 .setTangent(-Math.PI / 2)
-                .lineToY(-50)
-                .setTangent(Math.PI / 2)
-                .splineToConstantHeading(new Vector2d(56, -11), 0)
+                .splineToLinearHeading(new Pose2d(47, -54, -Math.PI / 4), 0)
+
+                // score THIRD SPECIMEN
+                .setTangent(Math.PI)
+                .splineToLinearHeading(new Pose2d(13.5, -31.125, Math.PI/2), Math.PI/2)
+
+                // move to STAGING POSITION
                 .setTangent(-Math.PI / 2)
-                .lineToY(-50)
-                .setTangent(Math.PI / 2)
-                .splineToConstantHeading(new Vector2d(61, -13), 0)
+                .splineToLinearHeading(new Pose2d(47, -54, -Math.PI / 4), 0)
+
+                // score FOURTH SPECIMEN
+                .setTangent(Math.PI)
+                .splineToLinearHeading(new Pose2d(10.5, -31.125, Math.PI/2), Math.PI/2)
+
+                // move to STAGING POSITION
                 .setTangent(-Math.PI / 2)
-                .lineToY(-50)
-                .setTangent(Math.PI / 2)
-                .splineToConstantHeading(new Vector2d(36, -61), -Math.PI / 2)
-                .setTangent(Math.PI / 2)
-                .splineToConstantHeading(new Vector2d(6.5, -34), Math.PI / 2)
+                .splineToLinearHeading(new Pose2d(47, -54, -Math.PI / 4), 0)
+
+                // score FIFTH SPECIMEN
+                .setTangent(Math.PI)
+                .splineToLinearHeading(new Pose2d(9, -31.125, Math.PI/2), Math.PI/2)
+
+                // move to STAGING POSITION
                 .setTangent(-Math.PI / 2)
-                .splineToConstantHeading(new Vector2d(36, -61), -Math.PI / 2)
-                .setTangent(Math.PI / 2)
-                .splineToConstantHeading(new Vector2d(4.5, -34), Math.PI / 2)
-                .setTangent(-Math.PI / 2)
-                .splineToConstantHeading(new Vector2d(36, -61), -Math.PI / 2)
-                .setTangent(Math.PI / 2)
-                .splineToConstantHeading(new Vector2d(2.5, -34), Math.PI / 2)
-                .setTangent(-Math.PI / 2)
-                .splineToConstantHeading(new Vector2d(36, -61), -Math.PI / 2)
-                .setTangent(Math.PI / 2)
-                .splineToConstantHeading(new Vector2d(0.5, -34), Math.PI / 2)
+                .splineToLinearHeading(new Pose2d(47, -54, -Math.PI / 4), 0)
+
                 .build());
-
-        // Alliance Pick Samples
-//        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(9.5, -61.25, Math.toRadians(270)))
-//                .lineToY(-34)
-//                .setTangent(-Math.PI / 2)
-//                .splineToLinearHeading(new Pose2d(48, -40, Math.PI / 2), 0)
-//                .setTangent(-Math.PI / 2)
-//                .lineToY(-48)
-//                .setTangent(0 * Math.PI)
-//                .splineToLinearHeading(new Pose2d(58, -40, Math.PI / 2), 0)
-//                .setTangent(-Math.PI / 2)
-//                .lineToY(-48)
-//                .setTangent(Math.PI)
-//                .splineToLinearHeading(new Pose2d(61, -13,-Math.PI / 2) , 0)
-//                .setTangent(-Math.PI / 2)
-//                .lineToY(-48)
-//                .setTangent(Math.PI / 2)
-//                .splineToConstantHeading(new Vector2d(36, -61), -Math.PI / 2)
-//                .setTangent(Math.PI / 2)
-//                .splineToConstantHeading(new Vector2d(6.5, -34), Math.PI / 2)
-//                .setTangent(-Math.PI / 2)
-//                .splineToConstantHeading(new Vector2d(36, -61), -Math.PI / 2)
-//                .setTangent(Math.PI / 2)
-//                .splineToConstantHeading(new Vector2d(4.5, -34), Math.PI / 2)
-//                .setTangent(-Math.PI / 2)
-//                .splineToConstantHeading(new Vector2d(36, -61), -Math.PI / 2)
-//                .setTangent(Math.PI / 2)
-//                .splineToConstantHeading(new Vector2d(2.5, -34), Math.PI / 2)
-//                .setTangent(-Math.PI / 2)
-//                .splineToConstantHeading(new Vector2d(36, -61), -Math.PI / 2)
-//                .setTangent(Math.PI / 2)
-//                .splineToConstantHeading(new Vector2d(0.5, -34), Math.PI / 2)
-//                .build());
-
-        // Neutral Samples
-//        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-14, -61.25, Math.toRadians(0)))
-//                .setTangent(3 * Math.PI / 4)
-//                .splineToLinearHeading(new Pose2d(-54, -54, Math.PI/4), 5 * Math.PI / 4)
-//                .setTangent(Math.PI / 4)
-//                .splineToLinearHeading(new Pose2d(-48, -40, Math.PI/2), Math.PI / 2)
-//                .setTangent(3 * Math.PI / 2)
-//                .splineToLinearHeading(new Pose2d(-54, -54, Math.PI/4), 5 * Math.PI / 4)
-//                .setTangent(Math.PI / 4)
-//                .splineToLinearHeading(new Pose2d(-58, -40, Math.PI/2), Math.PI / 2)
-//                .setTangent(3 * Math.PI / 2)
-//                .splineToLinearHeading(new Pose2d(-54, -54, Math.PI/4), 5 * Math.PI / 4)
-//                .setTangent(Math.PI / 4)
-//                .splineToLinearHeading(new Pose2d(-58, -25, Math.PI), Math.PI)
-//                .setTangent(Math.PI)
-//                .lineToX(-48)
-//                .setTangent(0 * Math.PI)
-//                .splineToLinearHeading(new Pose2d(-58, -50, Math.PI/2), 3 * Math.PI / 2)
-//                .setTangent(Math.PI / 2)
-//                .splineToLinearHeading(new Pose2d(-58, -40, Math.PI/2), 3 * Math.PI / 2)
-//                .setTangent(3 * Math.PI / 2)
-//                .splineToLinearHeading(new Pose2d(-54, -54, Math.PI/4), 5 * Math.PI / 4)
-//                .setTangent(Math.PI / 4)
-//                .splineToLinearHeading(new Pose2d(-24, -10, Math.PI / 2), 0)
-//                .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
                 .setDarkMode(true)
