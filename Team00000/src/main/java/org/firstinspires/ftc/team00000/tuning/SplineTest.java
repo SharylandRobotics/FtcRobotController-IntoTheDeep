@@ -1,10 +1,10 @@
-package org.firstinspires.ftc.team00000.v2.tuning;
+package org.firstinspires.ftc.team00000.tuning;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import org.firstinspires.ftc.team00000.v2.roadrunner.MecanumDrive;
+import org.firstinspires.ftc.team00000.roadrunner.MecanumDrive;
 
 public final class SplineTest extends LinearOpMode {
     @Override

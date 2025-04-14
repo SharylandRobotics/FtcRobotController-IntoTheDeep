@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.team00000.v1.messages;
+package org.firstinspires.ftc.team00000.messages;
 
 public final class MecanumCommandMessage {
     public long timestamp;

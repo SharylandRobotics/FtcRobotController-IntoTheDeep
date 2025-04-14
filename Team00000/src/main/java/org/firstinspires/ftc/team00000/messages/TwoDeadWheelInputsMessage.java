@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.team00000.v2.messages;
+package org.firstinspires.ftc.team00000.messages;
 
 import com.acmerobotics.roadrunner.ftc.PositionVelocityPair;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;

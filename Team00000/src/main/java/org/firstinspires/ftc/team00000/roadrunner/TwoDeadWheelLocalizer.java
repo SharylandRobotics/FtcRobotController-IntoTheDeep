@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.team00000.v2.roadrunner;
+package org.firstinspires.ftc.team00000.roadrunner;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.*;
@@ -10,7 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
 import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-import org.firstinspires.ftc.team00000.v2.messages.TwoDeadWheelInputsMessage;
+import org.firstinspires.ftc.team00000.messages.TwoDeadWheelInputsMessage;
 
 import java.lang.Math;
 
