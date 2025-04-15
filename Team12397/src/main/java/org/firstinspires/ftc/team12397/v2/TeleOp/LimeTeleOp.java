@@ -23,26 +23,17 @@ public class LimeTeleOp extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        double drive = 0;
-        double strafe = 0;
-        double turn = 0;
-
 
         Gamepad luisL = gamepad1;
-        Gamepad alexH = gamepad2;
 
         tdc.initialize(telemetry);
         telemetry.addData(">", "Hardware Initialized");
 
         while (opModeIsActive()) {
-            telemetry.clear();
-
-
             if (luisL.a){
                 tdc.assessEnvironment(1);
                 tdcReturn = tdc.getTdcReturn();
             }
-
 
             if (tdc.getScanSuccess()){
                 telemetry.addData("Scan successful? ", tdc.getScanSuccess());
