@@ -22,13 +22,13 @@ public class LLtdc {
      * The height from the lens to the floor
      *
      */
-    private final double lensHeightIN = 4.75- 1.75;
+    private final double lensHeightIN = 4- 1.5;
     /**
      * TBD; based on robot build
      * The parallel distance from the lens to the center of the robot
      * (parallel distance as in: shortest distance to the robot's front plane's center line.)
      */
-    private final double lensOffsetIN = 3.875;
+    private final double lensOffsetIN = 4.5;
     /**
      *TBD; based on robot build
      * The distance from the lens to the front plane of the robot
@@ -76,7 +76,7 @@ public class LLtdc {
      * @see Telemetry
      */
     public void initialize(Telemetry telemetry){
-        if (!limelight.isConnected()){
+        /*if (!limelight.isConnected()){
             telemetry.addLine("!!LIMELIGHT NOT CONNECTED!!\n " +
                     "Any following LL operations will return null.\n" +
                     "This class will NOT shutdown to prevent runtime errors,\n" +
@@ -84,9 +84,11 @@ public class LLtdc {
             limelight.stop(); // safety
             limelight.shutdown();
         } else if (!limelight.isRunning()){
+
+         */
             limelight.start(); // start LL & switch to object detection pipeline
             limelight.pipelineSwitch(6);
-        }
+        //}
     }
 
     /**
@@ -109,10 +111,12 @@ public class LLtdc {
 
         // filter out unreliable guesses
         for (int i = detectorResults.size()-1; i >= 0; i--) {
-            if (detectorResults.get(i).getConfidence() < 85) {
+            if (detectorResults.get(i).getConfidence() < 55) {
                 detectorResults.remove(i);
             }
         }
+
+        if (detectorResults.isEmpty()) { return null;}
 
         // get the closest one (by area)
         LLResultTypes.DetectorResult closest = detectorResults.get(0);
@@ -136,7 +140,8 @@ public class LLtdc {
     public void assessEnvironment(int recursionDepth){
         limelight.captureSnapshot("try");
 
-        if (limelight.getLatestResult() != null) {
+        if (limelight.getLatestResult() != null && limelight.getLatestResult().getDetectorResults() != null
+            && getDetectorResult() != null) {
             scanSuccessful = true;
             LLResultTypes.DetectorResult closest = getDetectorResult();
 
@@ -152,7 +157,11 @@ public class LLtdc {
             } else {
                 yPlaneRads = 0;
                 xPlaneRads = 0;
-                cornerPoints.clear(); cornerPoints.add(new ArrayList<Double>()); cornerPoints.get(0).add((double) 0);
+                if ( cornerPoints != null ){
+                    cornerPoints.clear();
+                } else {
+                    cornerPoints = new ArrayList<>();
+                }
             }
         }
     }

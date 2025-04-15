@@ -13,9 +13,8 @@ import org.firstinspires.ftc.team12397.visionSystems.TdcReturnObject;
 
 public class LimeTeleOp extends LinearOpMode {
 
-    Limelight3A limelight = this.hardwareMap.get(Limelight3A.class, "limelight-rfc");
 
-    LLtdc tdc = new LLtdc(limelight);
+
 
     TdcReturnObject tdcReturn;
 
@@ -23,16 +22,20 @@ public class LimeTeleOp extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-
+        Limelight3A limelight = this.hardwareMap.get(Limelight3A.class, "limelight-rfc");
+        LLtdc tdc = new LLtdc(limelight);
         Gamepad luisL = gamepad1;
 
         tdc.initialize(telemetry);
         telemetry.addData(">", "Hardware Initialized");
 
+        waitForStart();
         while (opModeIsActive()) {
             if (luisL.a){
                 tdc.assessEnvironment(1);
                 tdcReturn = tdc.getTdcReturn();
+            } else if (luisL.y){
+                tdc.initialize(telemetry);
             }
 
             if (tdc.getScanSuccess()){
@@ -43,8 +46,10 @@ public class LimeTeleOp extends LinearOpMode {
                 telemetry.addData(" R rads cw/ccw", tdcReturn.getYawCorrection(AngleUnit.DEGREES));
                 telemetry.addData(" C rads cw/ccw", tdcReturn.getClawYawCorrection(AngleUnit.DEGREES));
                 telemetry.addData("target Points: ", tdcReturn.getCornerList());
-                telemetry.update();
+            } else {
+                telemetry.addData("Scan unsuccessful :(", "");
             }
+            telemetry.update();
         }
     }
 
