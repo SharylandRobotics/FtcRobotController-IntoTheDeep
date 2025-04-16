@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.team12397.visionSystems;
 
+import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -66,6 +67,7 @@ public class LLtdc {
     private double clawYawCorrection;
     
     private boolean scanSuccessful;
+    private Telemetry tel;
     public LLtdc(Limelight3A LL){
         limelight = LL;
     }
@@ -86,9 +88,13 @@ public class LLtdc {
         } else if (!limelight.isRunning()){
 
          */
-            limelight.start(); // start LL & switch to object detection pipeline
+        limelight.setPollRateHz(1);
+        limelight.start(); // start LL & switch to object detection pipeline
             limelight.pipelineSwitch(6);
+
+            limelight.reloadPipeline();
         //}
+        tel = telemetry;
     }
 
     /**
@@ -107,25 +113,30 @@ public class LLtdc {
     }
 
     private LLResultTypes.DetectorResult getDetectorResult() {
-        List<LLResultTypes.DetectorResult> detectorResults = limelight.getLatestResult().getDetectorResults();
+        LLResult result = limelight.getLatestResult();
+        if (result != null && result.isValid()) {
+            double tx = result.getTx(); // How far left or right the target is (degrees)
+            double ty = result.getTy(); // How far up or down the target is (degrees)
+            double ta = result.getTa(); // How big the target looks (0%-100% of the image)
 
-        // filter out unreliable guesses
-        for (int i = detectorResults.size()-1; i >= 0; i--) {
-            if (detectorResults.get(i).getConfidence() < 55) {
-                detectorResults.remove(i);
+            tel.addData("Target X", tx);
+            tel.addData("Target Y", ty);
+            tel.addData("Target Area", ta);
+
+            List<LLResultTypes.DetectorResult> detections = result.getDetectorResults();
+            for (LLResultTypes.DetectorResult detection : detections) {
+                String className = detection.getClassName(); // What was detected
+                double x = detection.getTargetXDegrees(); // Where it is (left-right)
+                double y = detection.getTargetYDegrees(); // Where it is (up-down)
+                tel.addData(className, "at (" + x + ", " + y + ") degrees");
+
             }
-        }
+            return detections.get(0);
 
-        if (detectorResults.isEmpty()) { return null;}
-
-        // get the closest one (by area)
-        LLResultTypes.DetectorResult closest = detectorResults.get(0);
-        for (int i = detectorResults.size()-1; i > 0; i--) {
-            if (detectorResults.get(i).getTargetArea() > closest.getTargetArea()){
-                closest = detectorResults.get(i);
-            }
+        } else {
+            tel.addData("Limelight", "No Targets");
+            return null;
         }
-        return closest;
     }
 
     private RotatedRect List2Rect(List<List<Double>> list){
@@ -137,34 +148,24 @@ public class LLtdc {
         return Imgproc.minAreaRect(mat);
     }
 
-    public void assessEnvironment(int recursionDepth){
-        limelight.captureSnapshot("t");
-        limelight.reloadPipeline();
+    public void assessEnvironment(List<LLResultTypes.DetectorResult> detectorResult){
 
-        if (limelight.getLatestResult() != null && limelight.getLatestResult().getDetectorResults() != null
-            && getDetectorResult() != null) {
+        LLResultTypes.DetectorResult closest = detectorResult.get(0);
+        for (LLResultTypes.DetectorResult dr : detectorResult) {
+            if (dr.getConfidence() < 55){
+                detectorResult.remove(dr);
+            }
+            if (closest.getTargetArea() < dr.getTargetArea()){
+                closest = dr;
+            }
+        }
+
             scanSuccessful = true;
-            LLResultTypes.DetectorResult closest = getDetectorResult();
 
             yPlaneRads = Math.toRadians(closest.getTargetYDegrees());
             xPlaneRads = Math.toRadians(closest.getTargetXDegrees());
             cornerPoints = closest.getTargetCorners();
 
-        } else {
-            recursionDepth--;
-            scanSuccessful = false;
-            if (recursionDepth !=0) {
-                assessEnvironment(recursionDepth);
-            } else {
-                yPlaneRads = 0;
-                xPlaneRads = 0;
-                if ( cornerPoints != null ){
-                    cornerPoints.clear();
-                } else {
-                    cornerPoints = new ArrayList<>();
-                }
-            }
-        }
     }
 
 
@@ -187,7 +188,10 @@ public class LLtdc {
             yCorrection = rawYcorrection/2;
             armCorrection = rawYcorrection/2;
         }
-        clawYawCorrection = List2Rect(cornerPoints).angle;
+
+        if (cornerPoints != null) {
+            clawYawCorrection = List2Rect(cornerPoints).angle;
+        } else {clawYawCorrection = 0;}
     }
 
     private void fabricateReturnObject(){
