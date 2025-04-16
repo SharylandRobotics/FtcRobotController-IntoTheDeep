@@ -138,7 +138,8 @@ public class LLtdc {
     }
 
     public void assessEnvironment(int recursionDepth){
-        limelight.captureSnapshot("try");
+        limelight.captureSnapshot("t");
+        limelight.reloadPipeline();
 
         if (limelight.getLatestResult() != null && limelight.getLatestResult().getDetectorResults() != null
             && getDetectorResult() != null) {

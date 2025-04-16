@@ -49,6 +49,7 @@ public class LimeTeleOp extends LinearOpMode {
             } else {
                 telemetry.addData("Scan unsuccessful :(", "");
             }
+            telemetry.addData("Time since last update ms: ", (limelight.getTimeSinceLastUpdate()));
             telemetry.update();
         }
     }
