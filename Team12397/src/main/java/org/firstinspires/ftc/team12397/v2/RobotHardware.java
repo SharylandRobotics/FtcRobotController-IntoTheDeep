@@ -33,7 +33,7 @@ public class RobotHardware {
 
     private Servo clawPinch = null; // closes/opens
     private Servo clawYaw = null; // rotates the claw around a vertical axis
-    private Servo clawPitch = null; // rotates the claw around a horizontal axis
+    public Servo clawPitch = null; // rotates the claw around a horizontal axis
 
     public int leftFrontTarget;
     public int leftBackTarget;

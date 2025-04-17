@@ -1,64 +1,43 @@
 package org.firstinspires.ftc.team00000.v2.teleop;
 
+
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.team00000.v2.util.AngleServoController;
 import org.firstinspires.ftc.team00000.v2.vision.ColorVisionSubsystem;
 
 @TeleOp(name = "Specimen Aligner Test", group = "Test")
-@Config
 public class SpecimenAligner extends LinearOpMode {
 
-    // Dashboard tunable parameters
-    public static double servoCenter = 0.5;
-    public static double angleToPositionGain = 1.0 / 180.0;
-    public static double motionThresholdDeg = 2.0;
-    public static long updateIntervalMs = 50;
-    public static double smoothingAlpha = 0.3;
-    public static double minPos = 0.0;
-    public static double maxPos = 1.0;
+    @Override public void runOpMode() {
 
-    @Override
-    public void runOpMode() {
-        // Vision system
-        WebcamName cam = hardwareMap.get(WebcamName.class, "Webcam 1");
+        WebcamName cam      = hardwareMap.get(WebcamName.class, "Webcam 1");
+        Servo      wristSrv = hardwareMap.get(Servo.class,          "wrist_drive");
+
         ColorVisionSubsystem vision = new ColorVisionSubsystem(cam);
-        FtcDashboard.getInstance().startCameraStream(vision.getPortal(), 0);
+        AngleServoController servo  = new AngleServoController(wristSrv, telemetry);
 
-        // Servo
-        Servo wrist = hardwareMap.get(Servo.class, "wrist_drive");
-        AngleServoController controller = new AngleServoController(wrist, telemetry);
+        FtcDashboard.getInstance().startCameraStream(vision.getPortal(), 0);
 
         waitForStart();
 
         while (opModeIsActive()) {
+
             vision.update();
 
-            // Update controller parameters from dashboard
-            controller.setServoCenter(servoCenter);
-            controller.setGain(angleToPositionGain);
-            controller.setThreshold(motionThresholdDeg);
-            controller.setSmoothingAlpha(smoothingAlpha);
-            controller.setUpdateInterval(updateIntervalMs);
-            controller.setMinMax(minPos, maxPos);
-
             if (vision.hasTarget()) {
-                double angleError = vision.getAngleErrorToVertical();
-                controller.update(angleError);
+                servo.update(vision.getAngleErrorToVertical());
             }
 
-            telemetry.addData("Has Target?", vision.hasTarget());
-            telemetry.addData("Angle", vision.getAngle());
-            telemetry.addData("Area", vision.getArea());
+            telemetry.addData("Target?", vision.hasTarget());
+            telemetry.addData("Angle°",  "%.1f", vision.getAngle());
+            telemetry.addData("Area",    "%.0f", vision.getArea());
             telemetry.update();
 
-            sleep(20);
+            sleep(10);                    // ~100 Hz loop, AngleServoController throttles itself
         }
 
         vision.stop();

@@ -1,66 +1,65 @@
 package org.firstinspires.ftc.team00000.v2.util;
 
+
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class AngleServoController {
 
     private final Servo servo;
-    private final Telemetry telemetry;
+    private final Telemetry tele;
+    private final ExponentialMovingAverage ema =
+            new ExponentialMovingAverage(AngleServoConfig.SMOOTHING_ALPHA);
+    private double lastErrorDeg = 0;
 
-    private double servoCenter = 0.5;
-    private double angleToPositionGain = 1.0 / 180.0; // maps ±90 deg to ±0.5 servo range
-    private double minPos = 0.0;
-    private double maxPos = 1.0;
-    private double motionThresholdDeg = 2.0;
-    private long updateIntervalMs = 50;
+    private double currentPosition = AngleServoConfig.SERVO_CENTER;
+    private long   lastUpdateTime  = 0;
 
-    private double currentPosition = 0.5;
-    private long lastUpdateTime = 0;
-
-    private Double smoothedError = null;
-    private double smoothingAlpha = 0.3;
-
-    public AngleServoController(Servo servo, Telemetry telemetry) {
+    public AngleServoController(Servo servo, Telemetry tele) {
         this.servo = servo;
-        this.telemetry = telemetry;
-        this.currentPosition = servoCenter;
-        this.servo.setPosition(currentPosition);
+        this.tele  = tele;
+        servo.setPosition(currentPosition);
     }
 
-    public void update(double angleError) {
-        long now = System.currentTimeMillis();
-        if (now - lastUpdateTime < updateIntervalMs) return;
+    public void update(double angleErrorDeg) {
+
+        long now   = System.currentTimeMillis();
+        if (now - lastUpdateTime < AngleServoConfig.UPDATE_INTERVAL_MS) return;
         lastUpdateTime = now;
 
-        // Smoothing (EMA)
-        if (smoothedError == null) smoothedError = angleError;
-        smoothedError = smoothingAlpha * angleError + (1 - smoothingAlpha) * smoothedError;
+        // Smooth the error itself
+        double smoothedErr = ema.update(angleErrorDeg);
 
-        if (Math.abs(smoothedError) < motionThresholdDeg) return;
+        //Convert to absolute servo target
+        double targetPos = AngleServoConfig.SERVO_CENTER
+                - smoothedErr * AngleServoConfig.ANGLE_TO_POS_GAIN;
+        targetPos = MathUtil.clamp(targetPos,
+                AngleServoConfig.MIN_POS,
+                AngleServoConfig.MAX_POS);
 
-        double delta = smoothedError * angleToPositionGain;
-        double position = clamp(servoCenter - delta, minPos, maxPos);
-        servo.setPosition(position);
+        // Move toward target with rate‑limit
+        double delta = targetPos - currentPosition;
 
-        if (telemetry != null) {
-            telemetry.addData("Servo Pos", position);
-            telemetry.addData("Angle Err", angleError);
-            telemetry.addData("Smoothed Err", smoothedError);
-            telemetry.update();
+        if (Math.abs(delta) < AngleServoConfig.MOTION_THRESHOLD_POS) {
+            pushTel(angleErrorDeg, smoothedErr, 0.0);
+            return;                                       // close enough
         }
+
+        delta = MathUtil.clamp(delta,
+                -AngleServoConfig.MAX_DELTA_POS_PER_UPDATE,
+                AngleServoConfig.MAX_DELTA_POS_PER_UPDATE);
+
+        currentPosition += delta;
+        servo.setPosition(currentPosition);
+
+        pushTel(angleErrorDeg, smoothedErr, delta);
     }
 
-
-    private double clamp(double val, double min, double max) {
-        return Math.max(min, Math.min(max, val));
+    private void pushTel(double rawErr, double filtErr, double deltaPos) {
+        if (tele == null) return;
+        tele.addData("AngleErr",  "%.1f°", rawErr);
+        tele.addData("FiltErr",   "%.1f°", filtErr);
+        tele.addData("DeltaPos",  "%.3f",  deltaPos);
+        tele.addData("ServoPos",  "%.3f",  currentPosition);
     }
-
-    // Expose tunables (for FTC Dashboard later)
-    public void setServoCenter(double center) { this.servoCenter = center; }
-    public void setGain(double gain) { this.angleToPositionGain = gain; }
-    public void setMinMax(double min, double max) { this.minPos = min; this.maxPos = max; }
-    public void setThreshold(double deg) { this.motionThresholdDeg = deg; }
-    public void setSmoothingAlpha(double alpha) { this.smoothingAlpha = alpha; }
-    public void setUpdateInterval(long ms) { this.updateIntervalMs = ms; }
 }
