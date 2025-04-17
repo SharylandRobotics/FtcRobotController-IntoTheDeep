@@ -28,7 +28,7 @@ public class FieldCentric extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            drive = luisL.left_stick_y;
+            drive = -luisL.left_stick_y;
             strafe = luisL.left_stick_x;
             turn = luisL.right_stick_x;
 
@@ -42,7 +42,7 @@ public class FieldCentric extends LinearOpMode {
             if (Math.round(Math.abs(alexH.left_stick_y*10)) != 0){
                 // set target position to previous distance +/- fudge amount
                 extenderInches = robot.slideExtender.getCurrentPosition()/robot.EXTEND_SLIDE_TICKS_PER_INCH;
-                extenderInches = extenderInches + -alexH.left_stick_y*3;
+                extenderInches = extenderInches + -alexH.left_stick_y*5;
                 // fudge amount is 3.5 inches: 1/5 of maximum reach.
             } else {
                 // if alex DOES NOT move his left stick, stop arm at current position.
@@ -53,6 +53,26 @@ public class FieldCentric extends LinearOpMode {
             robot.driveFieldCentric(drive, strafe, turn);
             robot.RotateSlides(rotationDegrees);
             robot.setExtenderPosition(extenderInches);
+
+
+            if(alexH.dpad_up){
+                robot.setServoPosition(0, 0.1);
+            } else if ( alexH.dpad_down){
+                robot.setServoPosition(0, 0.375);
+            }
+
+            if(alexH.dpad_left){
+                robot.setServoPosition(1, 0);
+            } else if ( alexH.dpad_right){
+                robot.setServoPosition(1, 0.685);
+            }
+
+            if(alexH.left_bumper){
+                robot.setServoPosition(2, 0.05);
+            } else if (alexH.right_bumper){
+                robot.setServoPosition(2, 1);
+            }
+
         }
     }
 }

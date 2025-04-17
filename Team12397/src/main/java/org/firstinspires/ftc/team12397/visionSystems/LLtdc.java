@@ -9,13 +9,11 @@ import org.opencv.core.Point;
 import org.opencv.core.RotatedRect;
 import org.opencv.imgproc.Imgproc;
 
-import java.util.ArrayList;
 import java.util.List;
 
 // LimeLight Trigonometry Distance Calculator
 public class LLtdc {
     private Limelight3A limelight;
-    private TdcReturnObject returnObject;
 
     // absolute parameters: all TBD at 4/6/2025 ---
     /**
@@ -148,8 +146,7 @@ public class LLtdc {
         return Imgproc.minAreaRect(mat);
     }
 
-    public void assessEnvironment(List<LLResultTypes.DetectorResult> detectorResult){
-
+    public void parseDetectorResults(List<LLResultTypes.DetectorResult> detectorResult){
         LLResultTypes.DetectorResult closest = detectorResult.get(0);
         for (LLResultTypes.DetectorResult dr : detectorResult) {
             if (dr.getConfidence() < 55){
@@ -160,12 +157,10 @@ public class LLtdc {
             }
         }
 
-            scanSuccessful = true;
-
-            yPlaneRads = Math.toRadians(closest.getTargetYDegrees());
-            xPlaneRads = Math.toRadians(closest.getTargetXDegrees());
-            cornerPoints = closest.getTargetCorners();
-
+        scanSuccessful = true;
+        yPlaneRads = Math.toRadians(closest.getTargetYDegrees());
+        xPlaneRads = Math.toRadians(closest.getTargetXDegrees());
+        cornerPoints = closest.getTargetCorners();
     }
 
 
@@ -191,16 +186,18 @@ public class LLtdc {
 
         if (cornerPoints != null) {
             clawYawCorrection = List2Rect(cornerPoints).angle;
-        } else {clawYawCorrection = 0;}
+        } else {
+            clawYawCorrection = 0;
+        }
     }
 
-    private void fabricateReturnObject(){
+    private TdcReturnObject fabricateReturnObject(){
         // clawYawCorrection will hold 0 until further build details are released.
         if (scanSuccessful) {
             formulateRobotCorrections();
-            returnObject = new TdcReturnObject(yawCorrection, xCorrection, yCorrection, armCorrection, clawYawCorrection, cornerPoints);
+            return new TdcReturnObject(yawCorrection, xCorrection, yCorrection, armCorrection, clawYawCorrection, cornerPoints);
         } else {
-            returnObject = new TdcReturnObject(0,0,0,0,0, cornerPoints);
+            return new TdcReturnObject(0,0,0,0,0, cornerPoints);
         }
     }
 
@@ -210,8 +207,7 @@ public class LLtdc {
      * @see TdcReturnObject
      */
     public TdcReturnObject getTdcReturn() {
-        fabricateReturnObject();
-        return returnObject;
+        return fabricateReturnObject();
     }
 
     public boolean getScanSuccess(){
