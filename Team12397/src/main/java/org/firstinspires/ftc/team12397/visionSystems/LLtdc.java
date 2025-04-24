@@ -157,10 +157,12 @@ public class LLtdc {
             }
         }
 
-        scanSuccessful = true;
-        yPlaneRads = Math.toRadians(closest.getTargetYDegrees());
-        xPlaneRads = Math.toRadians(closest.getTargetXDegrees());
-        cornerPoints = closest.getTargetCorners();
+        if (!detectorResult.isEmpty()) {
+            scanSuccessful = true;
+            yPlaneRads = Math.toRadians(closest.getTargetYDegrees());
+            xPlaneRads = Math.toRadians(closest.getTargetXDegrees());
+            cornerPoints = closest.getTargetCorners();
+        }
     }
 
 

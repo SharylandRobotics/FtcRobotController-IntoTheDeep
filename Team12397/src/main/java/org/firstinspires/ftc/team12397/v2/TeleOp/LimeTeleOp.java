@@ -66,7 +66,7 @@ public class LimeTeleOp extends LinearOpMode {
 
 
         LLtdc tdc = new LLtdc(limelight);
-        TdcReturnObject returnObj;
+        TdcReturnObject returnObj = null;
 
         telemetry.setMsTransmissionInterval(11);
 
@@ -121,16 +121,22 @@ public class LimeTeleOp extends LinearOpMode {
                     returnObj = tdc.getTdcReturn();
                     telemetry.addData(String.valueOf(returnObj.getRobotYCorrection(DistanceUnit.INCH)), ": y correction");
                     telemetry.addData(String.valueOf(returnObj.getRobotXCorrection(DistanceUnit.INCH)), ": x correction");
-                    if (gamepad1.a && tdc.getScanSuccess() && wheelsDone()){
-                        driveEncoder(0.4, returnObj.getRobotYCorrection(DistanceUnit.INCH), returnObj.getRobotYCorrection(DistanceUnit.INCH)
-                                , returnObj.getRobotYCorrection(DistanceUnit.INCH), returnObj.getRobotYCorrection(DistanceUnit.INCH) );
-                    } else if (gamepad1.y && tdc.getScanSuccess() && wheelsDone()){
-                        driveEncoder(0.4, returnObj.getRobotXCorrection(DistanceUnit.INCH), -returnObj.getRobotXCorrection(DistanceUnit.INCH)
-                                , -returnObj.getRobotXCorrection(DistanceUnit.INCH), returnObj.getRobotXCorrection(DistanceUnit.INCH));
-                    }
+
                 }
             } else {
                 telemetry.addData("Limelight", "No data available");
+            }
+
+            if (gamepad1.a && tdc.getScanSuccess() && wheelsDone() && returnObj != null){
+                driveEncoder(0.4, returnObj.getRobotYCorrection(DistanceUnit.INCH), returnObj.getRobotYCorrection(DistanceUnit.INCH)
+                        , returnObj.getRobotYCorrection(DistanceUnit.INCH), returnObj.getRobotYCorrection(DistanceUnit.INCH) );
+            } else if (gamepad1.y && tdc.getScanSuccess() && wheelsDone() && returnObj != null){
+                driveEncoder(0.4, returnObj.getRobotXCorrection(DistanceUnit.INCH), -returnObj.getRobotXCorrection(DistanceUnit.INCH)
+                        , -returnObj.getRobotXCorrection(DistanceUnit.INCH), returnObj.getRobotXCorrection(DistanceUnit.INCH));
+            }
+
+            if (gamepad1.left_stick_button){
+                limelight.stop();
             }
 
             telemetry.update();
