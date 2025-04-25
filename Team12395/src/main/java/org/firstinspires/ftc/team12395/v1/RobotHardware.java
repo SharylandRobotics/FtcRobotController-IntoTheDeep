@@ -308,21 +308,19 @@ public class RobotHardware {
         } else if (offset == 0) {
             //retracted
             lextend.setPosition(0.8);
-            rextend.setPosition(0.2 * 360 / 300);
-        } else if (offset == 2){
+            rextend.setPosition(0.2);
+        } else if (offset == 0.15){
+            // slightly off robot
             lextend.setPosition(0.97);
-            rextend.setPosition(.135 * 360 / 300);
+            rextend.setPosition(.13);
+        } else {
+            lextend.setPosition(Math.max(0.8, lextend.getPosition()+(offset*0.2)));
+            rextend.setPosition(Math.min(0.2, rextend.getPosition()-(offset*0.2)));
         }
     }
 
     public void setHorizontalPosition(double offset) {
-        if (offset == 0) {
-            horizontal1.setPosition(0.24);
-            //b is pressed
-        } else if (offset == 1) {
-            //x is pressed
-            horizontal1.setPosition(0.79);
-        }
+            horizontal1.setPosition(offset);
     }
 
 
@@ -330,12 +328,12 @@ public class RobotHardware {
     public void setVerticalPower(double power) {
         if (power == 1) {
             // a is pressed
-            leftOutTake.setPosition(.34);
-            rightOutTake.setPosition(.66);
+            leftOutTake.setPosition(0.5);//0.34
+            rightOutTake.setPosition(0.5);//0.66
         }else if (power == 0){
             // y is pressed
-            leftOutTake.setPosition(.622);
-            rightOutTake.setPosition(.378);
+            leftOutTake.setPosition(1);//0.622
+            rightOutTake.setPosition(0);//0.378
         }else if (power == 2){
             leftOutTake.setPosition(.9);
             rightOutTake.setPosition(0.1);
@@ -357,9 +355,11 @@ public class RobotHardware {
 
     public void  setInClawRotation(double power){
         if(power == 0){
-            rotClaw.setPosition(.27);
+            rotClaw.setPosition(.27); // mid
         } else if(power == 1){
-            rotClaw.setPosition(.59);
+            rotClaw.setPosition(.59); // max turn to the left
+        } else {
+            rotClaw.setPosition(0.27+ (power*0.32));
         }
     }
 

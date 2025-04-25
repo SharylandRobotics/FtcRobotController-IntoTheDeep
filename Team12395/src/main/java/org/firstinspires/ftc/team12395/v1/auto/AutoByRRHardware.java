@@ -3,12 +3,15 @@ package org.firstinspires.ftc.team12395.v1.auto;
 
 // RR-specific imports
 
+import com.acmerobotics.roadrunner.*;
+import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.team12395.v1.MecanumDrive;
 import org.firstinspires.ftc.team12395.v1.RobotHardware;
 
+import java.lang.Math;
 
 
 @Autonomous(name =  "Auto By RoadRunner implementation", group = "Robot")
@@ -42,7 +45,7 @@ public class AutoByRRHardware extends LinearOpMode{
         Actions.runBlocking(
                 new SequentialAction(
                         trajectoryActionChosen,
-                        robot.setSlidePosition(robot.SLIDE_HIGH_BASKET),
+                        //robot.setSlidePosition(robot.SLIDE_HIGH_BASKET),
                         trajectoryActionCloseOut
                 )
         );

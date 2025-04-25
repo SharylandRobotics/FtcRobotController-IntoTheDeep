@@ -12,6 +12,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.team12395.v1.messages.TwoDeadWheelInputsMessage;
 
+import java.lang.Math;
+
 @Config
 public final class TwoDeadWheelLocalizer implements Localizer {
     public static class Params {
