@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.team12395.v1.teleop;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.team12395.v1.RobotHardware;
@@ -15,14 +16,16 @@ public class RobotCentricDuo extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        telemetry = dashboard.getTelemetry();
+
         double drive = 0;
         double strafe = 0;
         double turn = 0;
         double slide = 0;
-        double hslide = 0;
         double secondLeg = 0.5;
         double inClawPitch = 0;
-        double extendOffset = 1;
+        double extendPosition = 1;
         double inClawPinch = 0;
         double outClawPinch = 0;
         double rotation = 0;
@@ -66,27 +69,27 @@ public class RobotCentricDuo extends LinearOpMode {
             }else{
                 inClawPinch = 0;
             }
-            robot.setInClawPosition(inClawPinch);
+            robot.setInClawPinch(inClawPinch);
 
 
 
-            // THESE NUMBERS ARE NOT SERVO POSITIONS! look in RobotHardware.setInClawRotation() for positions
+            // THESE NUMBERS ARE NOT SERVO POSITIONS! look in RobotHardware.setInClawYaw() for positions
             // run the nudge(r) process if claw isn't closed
             if (inClawPinch == 0 && pinchTimer < 5) {
                 // > 0.05 to prevent unprompted movement (trigger drift)
                 if (gamepad2.left_trigger > 0.05) {
-                    rotation += 0.05 * gamepad2.left_trigger;
+                    rotation += 0.1 * gamepad2.left_trigger;
                     rotation = Math.min(1, rotation);
                 }
                 if (gamepad2.right_trigger > 0.05) {
-                    rotation -= 0.05 * gamepad2.right_trigger;
+                    rotation -= 0.1 * gamepad2.right_trigger;
                     rotation = Math.max(-0.82775, rotation);
                 }
             } else {
                 // if the claw is closed, wait for 5 thread loops (250 milis) and reset rotation.
                 rotation = 0;
             }
-            robot.setInClawRotation(rotation);
+            robot.setInClawYaw(rotation);
 
 
             //Use right bumper to open and close outtake claw
@@ -101,17 +104,18 @@ public class RobotCentricDuo extends LinearOpMode {
             }else{
                 outClawPinch = 0;
             }
-            robot.setOutClawPosition(outClawPinch);
+            robot.setOutClawPinch(outClawPinch);
 
 
             // Move both secondLeg servos to new position.  Use RobotHardware class
             // Use gamepad buttons to move arm up (Y) and down (A)
-            if (gamepad2.a) {
+            if (gamepad2.y) {
                 secondLeg = 1;
-            } else if (gamepad2.y) {
+            } else if (gamepad2.a) {
                 secondLeg = 0;
-            } else if (gamepad2.b) {
-                secondLeg = 3;
+            } else if (gamepad2.x) {
+                secondLeg = 0.34;
+                extendPosition = 0.15;
             }
 
 
@@ -125,41 +129,37 @@ public class RobotCentricDuo extends LinearOpMode {
                 slide = robot.SLIDE_HIGH_BASKET;
             }
 
-            robot.setVerticalPower(secondLeg);
-            robot.SetSlidePosition(slide);
 
-            if (gamepad2.x) {
+
+            if (gamepad2.b) {
                 inClawPitch = 1;
             }
-            else if (gamepad2.b) {
-                extendOffset = 0.15;
-            }
 
-            if (gamepad2.dpad_left) {
-                extendOffset = 0;
 
-            } else if (gamepad2.dpad_right) {
-                extendOffset = 1;
+            if (gamepad2.dpad_down) {
+                extendPosition = 0;
+
+            } else if (gamepad2.dpad_up) {
+                extendPosition = 1;
                 inClawPitch = 0;
-            }
-            // if gamepad2 moves his left stick up/down more than 5% of maximum movement...
-            // the higher the number the more minor movements it will detect ( to get to 0.5)
-            else if (Math.round(Math.abs(gamepad2.left_stick_y*10)) != 0){
+            } else if (Math.round(Math.abs(gamepad2.left_stick_y*20)) != 0){
+                // if alex moves his left stick up/down more than 2.5% of maximum movement...
+                /* throttle extendPosition : prevents it from being a huge/small #
+                 which the player would have to decrease manually
+                 not after setting the value because setExtensionPos already handles the parameter
+                 & you'd still decrease the previous #
+                */
+                extendPosition = Math.min(1, extendPosition);
+                extendPosition = Math.max(0, extendPosition);
                 // set target position to previous distance +/- fudge amount
-                extendOffset = -gamepad2.left_stick_y/10;
+                extendPosition = extendPosition + -gamepad2.left_stick_y/5;
 
-                if (-gamepad2.left_stick_y == -1){
-                    inClawPitch = 0;
-                }
             }
 
-
-
-
-            robot.setHorizontalPosition(inClawPitch);
-            robot.setIntakePosition(extendOffset);
-
-            extendOffset = 0;
+            robot.setOutTakePos(secondLeg);
+            robot.setSlidePosition(slide);
+            robot.setInClawPitchPos(inClawPitch);
+            robot.setExtensionPos(extendPosition);
 
             // Send telemetry messages to explain controls and show robot status
             telemetry.addData("Drive", "Left Stick");
@@ -173,10 +173,10 @@ public class RobotCentricDuo extends LinearOpMode {
             telemetry.addData("Drive Power", "%.2f", drive);
             telemetry.addData("Turn Power",  "%.2f", turn);
             telemetry.addData("Slide Power",  "%.2f", slide);
-            telemetry.addData("HSlidePower", "%.2f", hslide);
+            telemetry.addData("Extend %", "%.2f", extendPosition);
             telemetry.addData("Vertical Power", "%.2f", secondLeg);
-            telemetry.addData("Horizontal Position", "%.2f", inClawPitch);
-            telemetry.addData("Hand Position",  "Offset = %.2f", extendOffset);
+            telemetry.addData("Pitch Position", "%.2f", inClawPitch);
+            telemetry.addData("Hand Position",  "Offset = %.2f", extendPosition);
             telemetry.update();
 
             // Pace this loop so hands move at a reasonable speed.

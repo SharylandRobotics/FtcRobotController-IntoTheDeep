@@ -53,7 +53,7 @@ public class FieldCentricSolo extends LinearOpMode {
                 inClawOffset = 0;
             }
 
-            robot.setInClawPosition(inClawOffset);
+            robot.setInClawPinch(inClawOffset);
 
             //Use right bumper to open and close outtake claw
 
@@ -65,7 +65,7 @@ public class FieldCentricSolo extends LinearOpMode {
                 outClawOffset = 0;
             }
 
-            robot.setOutClawPosition(outClawOffset);
+            robot.setOutClawPinch(outClawOffset);
 
             // Move both servos to new position.  Use RobotHardware class
 
@@ -83,11 +83,11 @@ public class FieldCentricSolo extends LinearOpMode {
             //} else {
                 rotation = 1;
             //}
-            //robot.setInClawRotation(rotation);
+            //robot.setInClawYaw(rotation);
 
 
 
-            robot.setVerticalPower(vertical);
+            robot.setOutTakePos(vertical);
 
             //moves vertical slides
             if(gamepad1.dpad_up){
@@ -97,8 +97,8 @@ public class FieldCentricSolo extends LinearOpMode {
                 slide = robot.SLIDE_START;
             }
 
-            robot.setVerticalPower(vertical);
-            robot.SetSlidePosition(slide);
+            robot.setOutTakePos(vertical);
+            robot.setSlidePosition(slide);
 
             if (gamepad1.x) {
                 horizontalOffset = 1;
@@ -107,9 +107,9 @@ public class FieldCentricSolo extends LinearOpMode {
                 horizontalOffset = 0;
             }
 
-            robot.setInClawPosition(inClawOffset);
-            robot.setHorizontalPosition(horizontalOffset);
-            robot.setIntakePosition(extendOffset);
+            robot.setInClawPinch(inClawOffset);
+            robot.setInClawPitchPos(horizontalOffset);
+            robot.setExtensionPos(extendOffset);
 
             if (gamepad1.dpad_left) {
                 extendOffset = 0;
@@ -119,8 +119,8 @@ public class FieldCentricSolo extends LinearOpMode {
                 horizontalOffset = 0;
             }
 
-            robot.setIntakePosition(horizontalOffset);
-            robot.setIntakePosition(extendOffset);
+            robot.setExtensionPos(horizontalOffset);
+            robot.setExtensionPos(extendOffset);
 
             // Send telemetry messages to explain controls and show robot status
             telemetry.addData("Drive", "Left Stick");

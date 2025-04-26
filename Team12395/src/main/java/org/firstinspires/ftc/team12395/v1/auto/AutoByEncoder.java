@@ -25,7 +25,7 @@ public class AutoByEncoder extends LinearOpMode{
         //driving is always 1 inch more than said in code.
 
         //keeps slides retracted until they are used
-        robot.setIntakePosition(1);
+        robot.setExtensionPos(1);
 
         //forward
         robot.driveEncoder(0.75, 29, 29, 29, 29);

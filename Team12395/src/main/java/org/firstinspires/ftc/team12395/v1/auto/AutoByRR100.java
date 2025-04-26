@@ -31,19 +31,19 @@ public class AutoByRR100 extends LinearOpMode{
 
         TrajectoryActionBuilder tab1 = drive.actionBuilder(initialPose)
                 .afterTime(0, () -> {
-                    robot.setIntakePosition(1);
-                    robot.setOutClawPosition(1);
-                    robot.setVerticalPower(0);
-                    robot.setHorizontalPosition(0);
+                    robot.setExtensionPos(1);
+                    robot.setOutClawPinch(1);
+                    robot.setOutTakePos(0);
+                    robot.setInClawPitchPos(0);
                 })
                 .lineToY(-34)
                 .stopAndAdd(() ->{
-                    robot.SetSlidePosition(robot.SLIDE_HIGH_BASKET);
+                    robot.setSlidePosition(robot.SLIDE_HIGH_BASKET);
                 })
                 .waitSeconds(1)
                 .stopAndAdd(() -> {
-                    robot.setOutClawPosition(0);
-                    robot.setVerticalPower(1);
+                    robot.setOutClawPinch(0);
+                    robot.setOutTakePos(1);
                 })
 
                 .setTangent(Math.PI / 2)
@@ -59,12 +59,12 @@ public class AutoByRR100 extends LinearOpMode{
                 .setTangent(Math.PI / 2)
                 .lineToY(-55)
                 .stopAndAdd(() -> {
-                    robot.setHorizontalPosition(1);
+                    robot.setInClawPitchPos(1);
                 })
                 .waitSeconds(.5)
                 .stopAndAdd(() ->{
-                    robot.setInClawPosition(1);
-                    robot.setIntakePosition(2);
+                    robot.setInClawPinch(1);
+                    robot.setExtensionPos(2);
 
                 });
 //                .setTangent(Math.PI / 2);

@@ -1,14 +1,8 @@
 package org.firstinspires.ftc.team12395.v1;
 
-import androidx.annotation.NonNull;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.*;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
@@ -35,35 +29,37 @@ public class RobotHardware {
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
 
-    private DcMotor slideMotorL = null;
-    private DcMotor slideMotorR = null;
+    private DcMotorEx slideMotorL = null;
+    private DcMotorEx slideMotorR = null;
 
-    private Servo horizontal1 = null;
-    private Servo lextend = null;
-    private Servo rextend = null;
+    private Servo inClawPitch = null;
+    private Servo lExtend = null;
+    private Servo rExtend = null;
     private Servo leftOutTake = null;
     private Servo rightOutTake = null;
-    private Servo inClaw = null;
-    private Servo outClaw = null;
-    private Servo rotClaw = null;
+    private Servo inClawPinch = null;
+    private Servo outClawPinch = null;
+    private Servo inClawYaw = null;
 
     public int leftFrontTarget;
     public int leftBackTarget;
     public int rightFrontTarget;
     public int rightBackTarget;
 
+    // ticks
     public double COUNTS_PER_MOTOR_REV = 537.7;
     public double WHEEL_DIAMETER_INCHES = 3.77953;
     public double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV) / (WHEEL_DIAMETER_INCHES * Math.PI);
 
 
 
+    // slide ticks
     public double SLIDE_TICKS_PER_DEGREE = 28.0 * 19.2 / 360.0;
 
     public double SLIDE_START = 0.0 * SLIDE_TICKS_PER_DEGREE;
     public double SLIDE_HIGH_RUNG = 82 * SLIDE_TICKS_PER_DEGREE;
     public double SLIDE_HIGH_BASKET = 2100 * SLIDE_TICKS_PER_DEGREE;
-    public double slidePosition = (int)SLIDE_START;
+    public double slidePosition = 0;
 
     IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
             RevHubOrientationOnRobot.LogoFacingDirection.UP,
@@ -76,7 +72,7 @@ public class RobotHardware {
      * Initialize all the robot's hardware.
      * This method must be called ONCE when the OpMode is initialized.
      * <p>
-     * All of the hardware devices are accessed via the hardware map, and initialized.
+     * All the hardware devices are accessed via the hardware map, and initialized.
      */
 
     public void init() {
@@ -85,8 +81,8 @@ public class RobotHardware {
         leftBackDrive = myOpMode.hardwareMap.get(DcMotor.class, "left_back_drive");
         rightFrontDrive = myOpMode.hardwareMap.get(DcMotor.class, "right_front_drive");
         rightBackDrive = myOpMode.hardwareMap.get(DcMotor.class, "right_back_drive");
-        slideMotorL = myOpMode.hardwareMap.get(DcMotor.class, "slideMotorL");
-        slideMotorR = myOpMode.hardwareMap.get(DcMotor.class, "slideMotorR");
+        slideMotorL = myOpMode.hardwareMap.get(DcMotorEx.class, "slideMotorL");
+        slideMotorR = myOpMode.hardwareMap.get(DcMotorEx.class, "slideMotorR");
 
 
 
@@ -98,7 +94,8 @@ public class RobotHardware {
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
-        slideMotorR.setDirection(DcMotor.Direction.REVERSE);
+        slideMotorL.setDirection(DcMotorSimple.Direction.FORWARD);
+        slideMotorR.setDirection(DcMotorSimple.Direction.REVERSE);
 
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -109,6 +106,7 @@ public class RobotHardware {
         leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         slideMotorL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideMotorR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -119,22 +117,22 @@ public class RobotHardware {
 
         slideMotorL.setTargetPosition(0);
         slideMotorR.setTargetPosition(0);
-//        slideMotorL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        slideMotorR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideMotorL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideMotorR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideMotorL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slideMotorR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
         //Define and initialize ALL installed servos.
-        horizontal1 = myOpMode.hardwareMap.get(Servo.class, "horizontal1");
-        lextend = myOpMode.hardwareMap.get(Servo.class, "lextend");
-        rextend = myOpMode.hardwareMap.get(Servo.class, "rextend");
+        inClawPitch = myOpMode.hardwareMap.get(Servo.class, "horizontal1");
+        lExtend = myOpMode.hardwareMap.get(Servo.class, "lextend");
+        rExtend = myOpMode.hardwareMap.get(Servo.class, "rextend");
         leftOutTake = myOpMode.hardwareMap.get(Servo.class, "leftOutTake");
         rightOutTake = myOpMode.hardwareMap.get(Servo.class, "rightOutTake");
 
-        inClaw = myOpMode.hardwareMap.get(Servo.class, "inClaw");
-        outClaw = myOpMode.hardwareMap.get(Servo.class, "outClaw");
-        rotClaw = myOpMode.hardwareMap.get(Servo.class, "rotClaw");
+        inClawPinch = myOpMode.hardwareMap.get(Servo.class, "inClaw");
+        outClawPinch = myOpMode.hardwareMap.get(Servo.class, "outClaw");
+        inClawYaw = myOpMode.hardwareMap.get(Servo.class, "rotClaw");
 
         imu = myOpMode.hardwareMap.get(IMU.class, "imu");
         imu.initialize(parameters);
@@ -265,12 +263,14 @@ public class RobotHardware {
 
 
 
-    public void SetSlidePosition(double slidePosition){
+
+    public void setSlidePosition(double slidePosition){
         slideMotorL.setTargetPosition((int)(slidePosition));
         slideMotorR.setTargetPosition((int)(slidePosition));
 
-        ((DcMotorEx) slideMotorL).setVelocity(2500);
-        ((DcMotorEx) slideMotorR).setVelocity(2500);
+        slideMotorL.setVelocity(2500);
+        slideMotorR.setVelocity(2500);
+
         slideMotorL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideMotorR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -295,80 +295,66 @@ public class RobotHardware {
 
 
     /**
-     * Send the two hand-servos to opposing (mirrored) positions, based on the passed offset.
+     * Send the two hand-servos to opposing (mirrored) positions, based on the passed position.
      * the extends are what extend the slides
-     * @param offset
+     * @param position value from 0-1
      */
-    public void setIntakePosition(double offset){
+    public void setExtensionPos(double position){
         //whatever value you subtract from lextend should be added to rextend and vise versa
-        if (offset == 1) {
-            //extended
-            lextend.setPosition(1);
-            rextend.setPosition(0);
-        } else if (offset == 0) {
-            //retracted
-            lextend.setPosition(0.8);
-            rextend.setPosition(0.2);
-        } else if (offset == 0.15){
-            // slightly off robot
-            lextend.setPosition(0.97);
-            rextend.setPosition(.13);
-        } else {
-            lextend.setPosition(Math.max(0.8, lextend.getPosition()+(offset*0.2)));
-            rextend.setPosition(Math.min(0.2, rextend.getPosition()-(offset*0.2)));
-        }
+        position = Math.min(1, position);
+        position = Math.max(0, position);
+
+        lExtend.setPosition(0.8 + (position*0.2));
+        rExtend.setPosition(0.2 - (position*0.2));
     }
 
-    public void setHorizontalPosition(double offset) {
-            horizontal1.setPosition(offset);
+    public void setInClawPitchPos(double offset) {
+            inClawPitch.setPosition(offset);
     }
 
 
-    //changes here affect both duo and solo , add to left and right.
-    public void setVerticalPower(double power) {
-        if (power == 1) {
-            // a is pressed
-            leftOutTake.setPosition(0.5);//0.34
-            rightOutTake.setPosition(0.5);//0.66
-        }else if (power == 0){
-            // y is pressed
-            leftOutTake.setPosition(1);//0.622
-            rightOutTake.setPosition(0);//0.378
-        }else if (power == 2){
-            leftOutTake.setPosition(.9);
-            rightOutTake.setPosition(0.1);
-        } else if (power == 3){
-            leftOutTake.setPosition(.8);
-            rightOutTake.setPosition(.2);
-        }
+    /**
+     *
+     * @param position 1 is all the way back, 0 is the other way.
+     */
+    public void setOutTakePos(double position) {
+        leftOutTake.setPosition(position);
+        rightOutTake.setPosition(1 - position);
 
+        // 0.34, 0.66 is mid (horizontal pos)
+
+        // 0.622, 0.378 is back
     }
 
-    public void setInClawPosition(double power){
-        if(power == 1){
+    /**
+     *
+     * @param pos 1 is closed, 0 is open
+     */
+    public void setInClawPinch(double pos){
+        if(pos == 1){
             //closed
-            inClaw.setPosition(0.4);
-        }else if(power == 0){
-            inClaw.setPosition(0);
+            inClawPinch.setPosition(0.4);
+        }else {
+            // open
+            inClawPinch.setPosition(0);
         }
     }
 
-    public void  setInClawRotation(double power){
-        if(power == 0){
-            rotClaw.setPosition(.27); // mid
-        } else if(power == 1){
-            rotClaw.setPosition(.59); // max turn to the left
-        } else {
-            rotClaw.setPosition(0.27+ (power*0.32));
-        }
+    public void setInClawYaw(double pos){
+        inClawYaw.setPosition(0.27+ (pos*0.32));
     }
 
-    public void setOutClawPosition(double power){
-        if(power == 1){
-            //button pressed
-            outClaw.setPosition(1);
-        }else if(power == 0){
-            outClaw.setPosition(.7);
+    /**
+     *
+     * @param pos 1 is closed, 0 is open
+     */
+    public void setOutClawPinch(double pos){
+        if(pos == 1){
+            //closed
+            outClawPinch.setPosition(1);
+        }else {
+            // open
+            outClawPinch.setPosition(.7);
         }
     }
 }

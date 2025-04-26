@@ -37,17 +37,17 @@ public class AutoByEncoder100 extends LinearOpMode{
         //            public Action outTakeHangFirst(){
         //                return new OutTakeHangFirst();
         //            }
-        robot.setIntakePosition(1);
-        robot.setOutClawPosition(1);
-        robot.setVerticalPower(0);
+        robot.setExtensionPos(1);
+        robot.setOutClawPinch(1);
+        robot.setOutTakePos(0);
 
         robot.driveEncoder(.75,-28.2,-28.2,-28.2,-28.2);
-        robot.SetSlidePosition(robot.SLIDE_HIGH_RUNG);
-        robot.setHorizontalPosition(0);
+        robot.setSlidePosition(robot.SLIDE_HIGH_RUNG);
+        robot.setInClawPitchPos(0);
         sleep(950);
-        robot.SetSlidePosition(robot.SLIDE_START);
-        robot.setOutClawPosition(0);
-        robot.setVerticalPower(1);
+        robot.setSlidePosition(robot.SLIDE_START);
+        robot.setOutClawPinch(0);
+        robot.setOutTakePos(1);
         sleep(900);
         ///// score preload specimen ^^
         robot.driveEncoder(.5, 17.05,17.05,17.05,17.05);
@@ -55,37 +55,37 @@ public class AutoByEncoder100 extends LinearOpMode{
         // intake facing submersivle^^
         robot.driveEncoder(.6,44.097,-44.097,-44.097,44.097);
         //robot is current facing leftmost sample
-        robot.setHorizontalPosition(1);
+        robot.setInClawPitchPos(1);
         sleep(200);
-        robot.setIntakePosition(0);
+        robot.setExtensionPos(0);
         sleep(775);
-        robot.setInClawPosition(1);
+        robot.setInClawPinch(1);
         sleep(300);
-        robot.setHorizontalPosition(0);
-        robot.setIntakePosition(1);
+        robot.setInClawPitchPos(0);
+        robot.setExtensionPos(1);
         sleep(750);
-        robot.setOutClawPosition(1);
+        robot.setOutClawPinch(1);
         sleep(100);
-        robot.setInClawPosition(0);
+        robot.setInClawPinch(0);
         sleep(500);
-        robot.setVerticalPower(2);
+        robot.setOutTakePos(2);
         sleep(950);
-        robot.setOutClawPosition(0);
+        robot.setOutClawPinch(0);
         sleep(200);
-        robot.setVerticalPower(1);
+        robot.setOutTakePos(1);
         robot.driveEncoder(.55,11.25,-11.25,-11.25,11.25);
-        robot.setHorizontalPosition(1);
+        robot.setInClawPitchPos(1);
         sleep(200);
-        robot.setIntakePosition(0);
+        robot.setExtensionPos(0);
         sleep(700);
-        robot.setInClawPosition(1);
+        robot.setInClawPinch(1);
         sleep(300);
-        robot.setIntakePosition(2);
+        robot.setExtensionPos(2);
         robot.driveEncoder(.8, -46.5,-46.5,46.5,46.5);
-        robot.setInClawPosition(0);
+        robot.setInClawPinch(0);
         sleep(200);
-        robot.setHorizontalPosition(0);
-        robot.setIntakePosition(1);
+        robot.setInClawPitchPos(0);
+        robot.setExtensionPos(1);
         sleep(500);
         robot.driveEncoder(.75,54,-54,-54,54);
 

@@ -23,22 +23,22 @@ public class AutoByEncoder60 extends LinearOpMode{
         //driving is always 1 inch more than said in code.
 
         //keeps slides retracted until they are used
-        robot.setHorizontalPosition(0);
+        robot.setInClawPitchPos(0);
 
-        robot.setIntakePosition(1);
-        robot.setOutClawPosition(1);
-        robot.setVerticalPower(0);
+        robot.setExtensionPos(1);
+        robot.setOutClawPinch(1);
+        robot.setOutTakePos(0);
 
 
         robot.driveEncoder(.75,-20,-20,-20,-20);
         robot.driveEncoder(.75,7,-7,-7,7);
         robot.driveEncoder(.75,-9.6,-9.6,-9.6,-9.6);
-        robot.SetSlidePosition(robot.SLIDE_HIGH_RUNG);
-        robot.setHorizontalPosition(0);
+        robot.setSlidePosition(robot.SLIDE_HIGH_RUNG);
+        robot.setInClawPitchPos(0);
         sleep(950);
-        robot.SetSlidePosition(robot.SLIDE_START);
-        robot.setOutClawPosition(0);
-        robot.setVerticalPower(1);
+        robot.setSlidePosition(robot.SLIDE_START);
+        robot.setOutClawPinch(0);
+        robot.setOutTakePos(1);
         sleep(900);
 
 
@@ -54,21 +54,21 @@ public class AutoByEncoder60 extends LinearOpMode{
         //drive forward for alignment.
         robot.driveEncoder(0.75, -6, -6, -6, -6);
         sleep(1000);
-        robot.setHorizontalPosition(1);
+        robot.setInClawPitchPos(1);
         robot.driveEncoder(0.1,3,3,3,3);
         sleep(100);
-        robot.setInClawPosition(1);
+        robot.setInClawPinch(1);
         sleep(300);
-        robot.setHorizontalPosition(0);
+        robot.setInClawPitchPos(0);
         sleep(750);
-        robot.setOutClawPosition(1);
+        robot.setOutClawPinch(1);
         sleep(100);
-        robot.setInClawPosition(0);
+        robot.setInClawPinch(0);
 
 
         robot.driveEncoder(0.75,53,-53,-53,53);
 
-        robot.setVerticalPower(0);
+        robot.setOutTakePos(0);
 
         robot.driveEncoder(.4,-24,-24,-24,-24);
 
@@ -76,13 +76,13 @@ public class AutoByEncoder60 extends LinearOpMode{
 
 
 
-        robot.SetSlidePosition(robot.SLIDE_HIGH_RUNG);
-        robot.setHorizontalPosition(0);
+        robot.setSlidePosition(robot.SLIDE_HIGH_RUNG);
+        robot.setInClawPitchPos(0);
 
         sleep(950);
-        robot.SetSlidePosition(robot.SLIDE_START);
-        robot.setOutClawPosition(0);
-        robot.setVerticalPower(1);
+        robot.setSlidePosition(robot.SLIDE_START);
+        robot.setOutClawPinch(0);
+        robot.setOutTakePos(1);
         sleep(900);
 
         robot.driveEncoder(.6,5,5,5,5);
@@ -92,7 +92,7 @@ public class AutoByEncoder60 extends LinearOpMode{
         robot.driveEncoder(0.6, 20, 20, 20, 20);
 
         sleep(1000);
-        robot.setHorizontalPosition(1);
+        robot.setInClawPitchPos(1);
         robot.driveEncoder(0.4,5,5,5,5);
 
     }
