@@ -28,7 +28,6 @@ public class RobotHardware {
 
     // Define Sensor objects (Make them private so that they CANT be accessed externally)
     private IMU imu = null; // Universal IMU interface
-    private double headingError;
 
     /*
     These variables are declared here (as class members) so they can be updated in various methods, but still be
