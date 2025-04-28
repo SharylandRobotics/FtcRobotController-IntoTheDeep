@@ -40,6 +40,7 @@ public class RobotHardware {
     private Servo inClawPinch = null;
     private Servo outClawPinch = null;
     private Servo inClawYaw = null;
+    private Servo outClawYaw = null;
 
     public int leftFrontTarget;
     public int leftBackTarget;
@@ -74,10 +75,10 @@ public class RobotHardware {
 
     public void init() {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
-        leftFrontDrive = myOpMode.hardwareMap.get(DcMotor.class, "left_front_drive");
-        leftBackDrive = myOpMode.hardwareMap.get(DcMotor.class, "left_back_drive");
-        rightFrontDrive = myOpMode.hardwareMap.get(DcMotor.class, "right_front_drive");
-        rightBackDrive = myOpMode.hardwareMap.get(DcMotor.class, "right_back_drive");
+        leftFrontDrive = myOpMode.hardwareMap.get(DcMotor.class, "left_front");
+        leftBackDrive = myOpMode.hardwareMap.get(DcMotor.class, "left_back");
+        rightFrontDrive = myOpMode.hardwareMap.get(DcMotor.class, "right_front");
+        rightBackDrive = myOpMode.hardwareMap.get(DcMotor.class, "right_back");
         slideMotorL = myOpMode.hardwareMap.get(DcMotorEx.class, "slideMotorL");
         slideMotorR = myOpMode.hardwareMap.get(DcMotorEx.class, "slideMotorR");
 
@@ -121,15 +122,16 @@ public class RobotHardware {
 
 
         //Define and initialize ALL installed servos.
-        inClawPitch = myOpMode.hardwareMap.get(Servo.class, "horizontal1");
+        outClawYaw = myOpMode.hardwareMap.get(Servo.class, "claw_out_yaw");
+        inClawPitch = myOpMode.hardwareMap.get(Servo.class, "claw_pitch");
         lExtend = myOpMode.hardwareMap.get(Servo.class, "lextend");
         rExtend = myOpMode.hardwareMap.get(Servo.class, "rextend");
         leftOutTake = myOpMode.hardwareMap.get(Servo.class, "leftOutTake");
         rightOutTake = myOpMode.hardwareMap.get(Servo.class, "rightOutTake");
 
-        inClawPinch = myOpMode.hardwareMap.get(Servo.class, "inClaw");
-        outClawPinch = myOpMode.hardwareMap.get(Servo.class, "outClaw");
-        inClawYaw = myOpMode.hardwareMap.get(Servo.class, "rotClaw");
+        inClawPinch = myOpMode.hardwareMap.get(Servo.class, "claw_pinch");
+        outClawPinch = myOpMode.hardwareMap.get(Servo.class, "claw_out_pinch");
+        inClawYaw = myOpMode.hardwareMap.get(Servo.class, "claw_yaw");
 
         imu = myOpMode.hardwareMap.get(IMU.class, "imu");
         imu.initialize(parameters);
@@ -307,6 +309,7 @@ public class RobotHardware {
 
     public void setInClawPitchPos(double offset) {
         inClawPitch.setPosition(offset);
+        // 1 is down,
     }
 
 
@@ -326,8 +329,15 @@ public class RobotHardware {
 
 
     public void setInClawYaw(double pos){
-        inClawYaw.setPosition(0.27+ (pos*0.32));
-        // -0.84375 is true 0, 2.28125 is true 1
+        inClawYaw.setPosition(pos);
+        // 0 + x is mid, x is miniscule
+    }
+
+    public void setOutClawYaw(double pos){
+        outClawYaw.setPosition(pos);
+
+        // 0 default
+        // 72 flip
     }
 
     /**
@@ -335,26 +345,16 @@ public class RobotHardware {
      * @param pos 1 is closed, 0 is open
      */
     public void setOutClawPinch(double pos){
-        if(pos == 1){
-            //closed
-            outClawPinch.setPosition(1);
-        }else {
-            // open
-            outClawPinch.setPosition(.7);
-        }
+        outClawPinch.setPosition(pos);
+        // .5 open
+        // test .7 < close
     }
     /**
      *
      * @param pos 1 is closed, 0 is open
      */
     public void setInClawPinch(double pos){
-        if(pos == 1){
-            //closed
-            inClawPinch.setPosition(0.4);
-        }else {
-            // open
-            inClawPinch.setPosition(0);
-        }
+        inClawPinch.setPosition(pos);
     }
 }
 

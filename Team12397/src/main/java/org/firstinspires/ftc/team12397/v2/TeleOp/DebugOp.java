@@ -1,14 +1,24 @@
 package org.firstinspires.ftc.team12397.v2.TeleOp;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.team12397.v2.RobotHardware;
 
 
 @TeleOp(name="Debug OpMode", group="Robot")
-
+@Config
 public class DebugOp extends LinearOpMode {
+
+    public static double slide = 0;
+    public static double secondLeg = 0.5;
+    public static double inClawPitch = 0;
+    public static double extendPosition = 0;
+    public static double inClawPinch = 0;
+    public static double outClawPinch = 0;
+    public static double inClawYaw = 0;
+    public static double outClawYaw = 0;
 
     // Create a RobotHardware object to be used to access robot hardware.
     // Prefix any hardware functions with "robot." to access this class.
@@ -19,13 +29,7 @@ public class DebugOp extends LinearOpMode {
         FtcDashboard dashboard = FtcDashboard.getInstance();
         telemetry = dashboard.getTelemetry();
 
-        double slide = 0;
-        double secondLeg = 0.5;
-        double inClawPitch = 0;
-        double extendPosition = 0;
-        double inClawPinch = 0;
-        double outClawPinch = 0;
-        double inClawYaw = 0;
+
 
         // initialize all the hardware, using the hardware class. See how clean and simple this is?
         robot.init();
@@ -48,7 +52,7 @@ public class DebugOp extends LinearOpMode {
             // interpreted drive, 1 closed, 0.7 open
             robot.setOutClawPinch(outClawPinch);
 
-
+            robot.setOutClawYaw(outClawYaw);
 
             robot.setOutTakePos(secondLeg);
 
