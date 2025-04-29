@@ -74,8 +74,8 @@ public class FieldCentric extends LinearOpMode {
 
 
             // THESE NUMBERS ARE NOT SERVO POSITIONS! look in RobotHardware.setInClawYaw() for positions
-            // run the nudge(r) process if claw isn't closed
-            if (inClawPinch == 0 && pinchTimer < 5) {
+            // run the nudge(r) process if claw isn't closed and claw isn't backwards and extender isn't back
+            if (inClawPinch == 0 && pinchTimer < 5 && inClawPitch != 0 && extendPosition > 0.6) {
                 // > 0.05 to prevent unprompted movement (trigger drift)
                 if (gamepad2.left_trigger > 0.05) {
                     rotation += 0.1 * gamepad2.left_trigger;
@@ -83,7 +83,7 @@ public class FieldCentric extends LinearOpMode {
                 }
                 if (gamepad2.right_trigger > 0.05) {
                     rotation -= 0.1 * gamepad2.right_trigger;
-                    rotation = Math.max(-0.82775, rotation);
+                    rotation = Math.max(0, rotation);
                 }
             } else {
                 // if the claw is closed, wait for 5 thread loops (250 milis) and reset rotation.
@@ -110,39 +110,37 @@ public class FieldCentric extends LinearOpMode {
             // Move both secondLeg servos to new position.  Use RobotHardware class
             // Use gamepad buttons to move arm up (Y) and down (A)
             if (gamepad2.y) {
-                secondLeg = 1;
-            } else if (gamepad2.a) {
+                secondLeg = 2;
+                // switch to a less steep angle and turn around claw
+            } else if (gamepad2.b) {
                 secondLeg = 0;
-            } else if (gamepad2.x) {
-                secondLeg = 0.34;
-                extendPosition = 0.15;
+                // servo to transfer tuck in pitch yaw to 0
             }
 
 
             //moves vertical slides
-            if(gamepad1.dpad_up){
+            if(gamepad1.dpad_up) {
                 slide = 114;
-            }else if (gamepad1.dpad_down){
-                secondLeg = 1;
-                slide = 0;
-            } else if (gamepad1.dpad_left){
+            }if (gamepad1.dpad_left){
                 slide = robot.SLIDE_HIGH_BASKET;
             }
 
 
-
-            if (gamepad2.b) {
-                inClawPitch = 1;
-            }
-
-
             if (gamepad2.dpad_down) {
-                extendPosition = 0;
-
+                extendPosition = 0.4;
+                inClawPitch = 0;
+                secondLeg = 0;
+                rotation = 0;
             } else if (gamepad2.dpad_up) {
                 extendPosition = 1;
+                inClawPitch = 1;
+                pinchToggle = false;
+                rotation = 0;
+
+            } else if(gamepad2.dpad_right){
+                extendPosition = 0;
                 inClawPitch = 0;
-            } else if (Math.round(Math.abs(gamepad2.left_stick_y*20)) != 0){
+            }else if (Math.round(Math.abs(gamepad2.left_stick_y*20)) != 0){
                 // if alex moves his left stick up/down more than 2.5% of maximum movement...
                 /* throttle extendPosition : prevents it from being a huge/small #
                  which the player would have to decrease manually
@@ -153,6 +151,9 @@ public class FieldCentric extends LinearOpMode {
                 extendPosition = Math.max(0, extendPosition);
                 // set target position to previous distance +/- fudge amount
                 extendPosition = extendPosition + -gamepad2.left_stick_y/5;
+                if (-gamepad2.left_stick_y == -1){
+                    extendPosition = 0;
+                }
 
             }
 

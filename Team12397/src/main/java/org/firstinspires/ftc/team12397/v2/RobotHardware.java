@@ -35,8 +35,8 @@ public class RobotHardware {
     private Servo inClawPitch = null;
     private Servo lExtend = null;
     private Servo rExtend = null;
-    private Servo leftOutTake = null;
-    private Servo rightOutTake = null;
+    public Servo leftOutTake = null;
+    public Servo rightOutTake = null;
     private Servo inClawPinch = null;
     private Servo outClawPinch = null;
     private Servo inClawYaw = null;
@@ -303,13 +303,18 @@ public class RobotHardware {
         position = Math.min(1, position);
         position = Math.max(0, position);
 
-        lExtend.setPosition(0.8 + (position*0.2));
-        rExtend.setPosition(0.2 - (position*0.2));
+        lExtend.setPosition(1 - (position*0.2));
+        rExtend.setPosition(0 + (position*0.2));
+        // 0.4 extend, 0.3 pitch, 0.8 leg for passing
     }
 
-    public void setInClawPitchPos(double offset) {
-        inClawPitch.setPosition(offset);
-        // 1 is down,
+    public void setInClawPitchPos(double interpretedPos) {
+        if (interpretedPos == 1){
+            inClawPitch.setPosition(1);
+        } else {
+            inClawPitch.setPosition(0.3);
+        }
+        // 1 is down, 0.3 is passing
     }
 
 
@@ -318,26 +323,38 @@ public class RobotHardware {
      * @param position 1 is all the way back, 0 is the other way.
      */
     public void setOutTakePos(double position) {
-        leftOutTake.setPosition(position);
-        rightOutTake.setPosition(1 - position);
+        if (position == 0){
+            leftOutTake.setPosition(0.8);
+            rightOutTake.setPosition(1.01 - 0.8);
+        } else if (position == 1){
+            leftOutTake.setPosition(0.77);
+            rightOutTake.setPosition(1.01 - 0.77);
+        } else {
+            leftOutTake.setPosition(0.25);
+            rightOutTake.setPosition(1.01 - 0.25);
+        }
+        // right servo is 0.01 ahead,
 
-        // 0.34, 0.66 is mid (horizontal pos)
-
-        // 0.622, 0.378 is back
+        // 0.77 is mid, 1 is back, 0 is in robot
+        // 0.45 is perp.
     }
 
 
 
     public void setInClawYaw(double pos){
-        inClawYaw.setPosition(pos);
-        // 0 + x is mid, x is miniscule
+        pos = Math.min(0.3, pos); // we don't filter for (-) bc it will always go to 0.
+        inClawYaw.setPosition(pos*0.3);
+        // 0 is mid, 0.3 is to the left 90 deg!MAX!
     }
 
-    public void setOutClawYaw(double pos){
-        outClawYaw.setPosition(pos);
+    public void setOutClawYaw(double interpretedPos){
+        if (interpretedPos == 1) {
+            outClawYaw.setPosition(0.65);
+        } else {
+            outClawYaw.setPosition(0);
+        }
 
-        // 0 default
-        // 72 flip
+        // 0 default, 0.65 is flipped
     }
 
     /**
@@ -345,16 +362,25 @@ public class RobotHardware {
      * @param pos 1 is closed, 0 is open
      */
     public void setOutClawPinch(double pos){
-        outClawPinch.setPosition(pos);
-        // .5 open
-        // test .7 < close
+        if (pos == 1) {
+            outClawPinch.setPosition(0.85);
+        } else {
+            outClawPinch.setPosition(0.46);
+        }
+        // 0.85 closed , 0.46 open
+
     }
     /**
      *
      * @param pos 1 is closed, 0 is open
      */
     public void setInClawPinch(double pos){
-        inClawPinch.setPosition(pos);
+        if (pos == 1) {
+            inClawPinch.setPosition(0.35);
+        } else {
+            inClawPinch.setPosition(0);
+        }
+        // 0.35 closed , 0 open
     }
 }
 

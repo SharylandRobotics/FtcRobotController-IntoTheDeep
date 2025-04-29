@@ -19,6 +19,9 @@ public class DebugOp extends LinearOpMode {
     public static double outClawPinch = 0;
     public static double inClawYaw = 0;
     public static double outClawYaw = 0;
+    public static boolean singleServo = false;
+    public static double leftOut = 0;
+    public static double rightOut = 0;
 
     // Create a RobotHardware object to be used to access robot hardware.
     // Prefix any hardware functions with "robot." to access this class.
@@ -42,7 +45,7 @@ public class DebugOp extends LinearOpMode {
         while (opModeIsActive()) {
 
 
-            // interpreted drive, 0.4 closed, 0 open
+            // interpreted drive, 0.35 closed, 0 open
             robot.setInClawPinch(inClawPinch);
 
 
@@ -54,10 +57,17 @@ public class DebugOp extends LinearOpMode {
 
             robot.setOutClawYaw(outClawYaw);
 
-            robot.setOutTakePos(secondLeg);
+
 
             robot.setSlidePosition(slide*robot.TICKS_PER_INCH);
 
+            if (singleServo){
+                robot.leftOutTake.setPosition(leftOut);
+                robot.rightOutTake.setPosition(rightOut);
+            } else {
+                robot.setOutTakePos(secondLeg);
+            }
+            // 1 down, 0.25 angled
             robot.setInClawPitchPos(inClawPitch);
 
             robot.setExtensionPos(extendPosition);
