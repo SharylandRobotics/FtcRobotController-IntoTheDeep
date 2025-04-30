@@ -22,13 +22,17 @@ public class FieldCentric extends LinearOpMode {
         double drive = 0;
         double strafe = 0;
         double turn = 0;
+
         double slide = 0;
+
         double secondLeg = 0.5;
         double inClawPitch = 0;
-        double extendPosition = 1;
         double inClawPinch = 0;
+        double inClawYaw = 0;
         double outClawPinch = 0;
-        double rotation = 0;
+        double outClawYaw = 0;
+        double extendPosition = 0;
+
 
         int pinchTimer = 0;
         boolean pinchToggle = false;
@@ -59,7 +63,7 @@ public class FieldCentric extends LinearOpMode {
 
             // toggle pinch logic
             if (gamepad2.left_bumper){
-                if (pinchTimer >= 10) {
+                if (pinchTimer >= 4) {
                     pinchToggle = !pinchToggle;
                     pinchTimer = 0;
                 }
@@ -75,26 +79,26 @@ public class FieldCentric extends LinearOpMode {
 
             // THESE NUMBERS ARE NOT SERVO POSITIONS! look in RobotHardware.setInClawYaw() for positions
             // run the nudge(r) process if claw isn't closed and claw isn't backwards and extender isn't back
-            if (inClawPinch == 0 && pinchTimer < 5 && inClawPitch != 0 && extendPosition > 0.6) {
+            if ( (inClawPinch == 0 && pinchTimer > 4) && (inClawPitch == 1 && extendPosition > 0.4) ) {
                 // > 0.05 to prevent unprompted movement (trigger drift)
                 if (gamepad2.left_trigger > 0.05) {
-                    rotation += 0.1 * gamepad2.left_trigger;
-                    rotation = Math.min(1, rotation);
+                    inClawYaw += 0.1 * gamepad2.left_trigger;
+                    inClawYaw = Math.min(1, inClawYaw);
                 }
                 if (gamepad2.right_trigger > 0.05) {
-                    rotation -= 0.1 * gamepad2.right_trigger;
-                    rotation = Math.max(0, rotation);
+                    inClawYaw -= 0.1 * gamepad2.right_trigger;
+                    inClawYaw = Math.max(0, inClawYaw);
                 }
             } else {
-                // if the claw is closed, wait for 5 thread loops (250 milis) and reset rotation.
-                rotation = 0;
+                // if the claw is closed, wait for 5 thread loops (250 milis) and reset inClawYaw.
+                inClawYaw = 0;
             }
-            robot.setInClawYaw(rotation);
+            robot.setInClawYaw(inClawYaw);
 
 
             //Use right bumper to open and close outtake claw
             if (gamepad2.right_bumper){
-                if (outPinchTimer >= 10) {
+                if (outPinchTimer >= 4) {
                     outPinchToggle = !outPinchToggle;
                     outPinchTimer = 0;
                 }
@@ -110,10 +114,13 @@ public class FieldCentric extends LinearOpMode {
             // Move both secondLeg servos to new position.  Use RobotHardware class
             // Use gamepad buttons to move arm up (Y) and down (A)
             if (gamepad2.y) {
-                secondLeg = 2;
+                secondLeg = 1;
+                outClawYaw = 1;
                 // switch to a less steep angle and turn around claw
             } else if (gamepad2.b) {
                 secondLeg = 0;
+                outClawYaw = 0;
+                inClawPitch = -1;
                 // servo to transfer tuck in pitch yaw to 0
             }
 
@@ -125,17 +132,27 @@ public class FieldCentric extends LinearOpMode {
                 slide = robot.SLIDE_HIGH_BASKET;
             }
 
+            if (-gamepad2.right_stick_y == 1){
+                slide = robot.SLIDE_HIGH_BASKET;
+            } else if (-gamepad2.right_stick_y == -1){
+                slide = 0;
+            } else if (gamepad2.right_stick_x == 1){
+                slide = 114;
+            } else if (gamepad2.right_stick_x == -1){
+                slide = robot.SLIDE_HANG_RUNG;
+            }
+
 
             if (gamepad2.dpad_down) {
                 extendPosition = 0.4;
                 inClawPitch = 0;
                 secondLeg = 0;
-                rotation = 0;
+                inClawYaw = 0;
             } else if (gamepad2.dpad_up) {
                 extendPosition = 1;
                 inClawPitch = 1;
                 pinchToggle = false;
-                rotation = 0;
+                inClawYaw = 0;
 
             } else if(gamepad2.dpad_right){
                 extendPosition = 0;
@@ -157,6 +174,7 @@ public class FieldCentric extends LinearOpMode {
 
             }
 
+            robot.setOutClawYaw(outClawYaw);
             robot.setOutTakePos(secondLeg);
             robot.setSlidePosition(slide);
             robot.setInClawPitchPos(inClawPitch);

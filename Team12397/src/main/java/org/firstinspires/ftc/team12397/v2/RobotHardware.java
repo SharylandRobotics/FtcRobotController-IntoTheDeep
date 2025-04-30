@@ -58,6 +58,7 @@ public class RobotHardware {
     public final double SLIDE_TICKS_PER_DEGREE = ((((1+(46./17))) * (1+(46./11))) * 28) / 360;
     public final double TICKS_PER_INCH = (SLIDE_TICKS_PER_DEGREE*360)/(Math.PI*1.5);
     public final double SLIDE_HIGH_BASKET = 2100 * SLIDE_TICKS_PER_DEGREE;
+    public final double SLIDE_HANG_RUNG = 5 * TICKS_PER_INCH;
 
     IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
             RevHubOrientationOnRobot.LogoFacingDirection.UP,
@@ -311,8 +312,11 @@ public class RobotHardware {
     public void setInClawPitchPos(double interpretedPos) {
         if (interpretedPos == 1){
             inClawPitch.setPosition(1);
-        } else {
+        } else if (interpretedPos == 0){
             inClawPitch.setPosition(0.3);
+        } else {
+            // tucked in (-1)
+            inClawPitch.setPosition(0.05);
         }
         // 1 is down, 0.3 is passing
     }
@@ -327,11 +331,8 @@ public class RobotHardware {
             leftOutTake.setPosition(0.8);
             rightOutTake.setPosition(1.01 - 0.8);
         } else if (position == 1){
-            leftOutTake.setPosition(0.77);
-            rightOutTake.setPosition(1.01 - 0.77);
-        } else {
-            leftOutTake.setPosition(0.25);
-            rightOutTake.setPosition(1.01 - 0.25);
+            leftOutTake.setPosition(0.35);
+            rightOutTake.setPosition(1.01 - 0.35);
         }
         // right servo is 0.01 ahead,
 
