@@ -82,11 +82,11 @@ public class FieldCentric extends LinearOpMode {
             if ( (inClawPinch == 0 && pinchTimer > 4) && (inClawPitch == 1 && extendPosition > 0.4) ) {
                 // > 0.05 to prevent unprompted movement (trigger drift)
                 if (gamepad2.left_trigger > 0.05) {
-                    inClawYaw += 0.1 * gamepad2.left_trigger;
+                    inClawYaw += 0.2 * gamepad2.left_trigger;
                     inClawYaw = Math.min(1, inClawYaw);
                 }
                 if (gamepad2.right_trigger > 0.05) {
-                    inClawYaw -= 0.1 * gamepad2.right_trigger;
+                    inClawYaw -= 0.2 * gamepad2.right_trigger;
                     inClawYaw = Math.max(0, inClawYaw);
                 }
             } else {
@@ -143,10 +143,10 @@ public class FieldCentric extends LinearOpMode {
             }
 
 
-            if (gamepad2.dpad_down) {
+            if (gamepad2.dpad_right) {
                 extendPosition = 0.4;
                 inClawPitch = 0;
-                secondLeg = 0;
+                secondLeg = 0.5;
                 inClawYaw = 0;
             } else if (gamepad2.dpad_up) {
                 extendPosition = 1;
@@ -154,9 +154,10 @@ public class FieldCentric extends LinearOpMode {
                 pinchToggle = false;
                 inClawYaw = 0;
 
-            } else if(gamepad2.dpad_right){
+            } else if(gamepad2.dpad_down){
                 extendPosition = 0;
                 inClawPitch = 0;
+                secondLeg = 0.5;
             }else if (Math.round(Math.abs(gamepad2.left_stick_y*20)) != 0){
                 // if alex moves his left stick up/down more than 2.5% of maximum movement...
                 /* throttle extendPosition : prevents it from being a huge/small #

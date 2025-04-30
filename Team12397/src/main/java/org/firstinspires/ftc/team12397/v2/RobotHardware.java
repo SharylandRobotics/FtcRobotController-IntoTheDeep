@@ -304,8 +304,8 @@ public class RobotHardware {
         position = Math.min(1, position);
         position = Math.max(0, position);
 
-        lExtend.setPosition(1 - (position*0.2));
-        rExtend.setPosition(0 + (position*0.2));
+        lExtend.setPosition(1 - (position*0.25));
+        rExtend.setPosition(0 + (position*0.25));
         // 0.4 extend, 0.3 pitch, 0.8 leg for passing
     }
 
@@ -333,6 +333,12 @@ public class RobotHardware {
         } else if (position == 1){
             leftOutTake.setPosition(0.35);
             rightOutTake.setPosition(1.01 - 0.35);
+        } else if (position == -1){
+            leftOutTake.setPosition(0.55);
+            rightOutTake.setPosition(1.01 - 0.55);
+        } else {
+            leftOutTake.setPosition(0.6);
+            rightOutTake.setPosition(1.01 - 0.6);
         }
         // right servo is 0.01 ahead,
 
@@ -340,11 +346,16 @@ public class RobotHardware {
         // 0.45 is perp.
     }
 
+    public void setOutTakeCustom(double pos){
+        leftOutTake.setPosition(pos);
+        rightOutTake.setPosition(1.01 - pos);
+    }
+
 
 
     public void setInClawYaw(double pos){
-        pos = Math.min(0.3, pos); // we don't filter for (-) bc it will always go to 0.
-        inClawYaw.setPosition(pos*0.3);
+        pos = Math.min(0.65, pos); // we don't filter for (-) bc it will always go to 0.
+        inClawYaw.setPosition(pos*0.65);
         // 0 is mid, 0.3 is to the left 90 deg!MAX!
     }
 
@@ -366,7 +377,7 @@ public class RobotHardware {
         if (pos == 1) {
             outClawPinch.setPosition(0.85);
         } else {
-            outClawPinch.setPosition(0.46);
+            outClawPinch.setPosition(0.52);
         }
         // 0.85 closed , 0.46 open
 
