@@ -4,7 +4,6 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.*;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.team00000.v3.vision.ColorVisionSubsystem;
 
 public class RobotHardware {
 
@@ -15,7 +14,6 @@ public class RobotHardware {
     private DcMotor leftFrontDrive, leftBackDrive, rightFrontDrive, rightBackDrive, pivotDrive, slideDrive;
     private Servo clawDrive, wristDrive, armDrive;
     private IMU imu;
-    private ColorVisionSubsystem colorVision;
 
     public double leftFrontPower, leftBackPower, rightFrontPower, rightBackPower;
 
@@ -23,11 +21,11 @@ public class RobotHardware {
     public double COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION, WHEEL_DIAMETER_INCHES, COUNTS_PER_INCH;
     public double P_TURN_GAIN, P_DRIVE_GAIN;
     public double PIVOT_TICKS_PER_DEGREE, SLIDE_TICKS_PER_REV, TOLERANCE_TICKS;
-    public double PIVOT_MINIMUM, PIVOT_SCORE;
-    public double SLIDE_MINIMUM, SLIDE_MAXIMUM;
+    public double PIVOT_MINIMUM, PIVOT_SPECIMEN, PIVOT_SCORE, PIVOT_MAXIMUM;
+    public double SLIDE_MINIMUM, SLIDE_SCORE, SLIDE_MAXIMUM;
     public double CLAW_OPEN, CLAW_CLOSE;
     public double WRIST_LEFT, WRIST_CENTER, WRIST_RIGHT;
-    public double ARM_ACTIVE, ARM_MID, ARM_INACTIVE;
+    public double ARM_ACTIVE, ARM_SPECIMEN, ARM_SCORE, ARM_INACTIVE;
     public double pivotPosition, slidePosition;
 
     // Define a constructor that allows the OpMode to pass a reference to itself.
@@ -92,13 +90,17 @@ public class RobotHardware {
         SLIDE_TICKS_PER_REV = 28 * 19.2;
         TOLERANCE_TICKS = 10.0;
 
-        PIVOT_MINIMUM = 8 * PIVOT_TICKS_PER_DEGREE;
-        PIVOT_SCORE = 60 * PIVOT_TICKS_PER_DEGREE;
+        PIVOT_MINIMUM = 9 * PIVOT_TICKS_PER_DEGREE;
+        PIVOT_SPECIMEN = 27 * PIVOT_TICKS_PER_DEGREE;
+        PIVOT_SCORE = 42 * PIVOT_TICKS_PER_DEGREE;
+        PIVOT_MAXIMUM = 90 * PIVOT_TICKS_PER_DEGREE;
+
 
         SLIDE_MINIMUM = 0 * SLIDE_TICKS_PER_REV;
+        SLIDE_SCORE = 3 * SLIDE_TICKS_PER_REV;
         SLIDE_MAXIMUM = 4 * SLIDE_TICKS_PER_REV;
 
-        CLAW_CLOSE = 0.51;
+        CLAW_CLOSE = 0.55;
         CLAW_OPEN = 0.2;
 
         WRIST_LEFT = 0.75;
@@ -106,7 +108,8 @@ public class RobotHardware {
         WRIST_RIGHT = 0.25;
 
         ARM_ACTIVE = 0.1666;
-        ARM_MID = 0.5;
+        ARM_SPECIMEN = 0.425;
+        ARM_SCORE = 0.6666;
         ARM_INACTIVE = 0.8333;
 
         /*
@@ -245,7 +248,7 @@ public class RobotHardware {
      */
     public void setPivotPosition(double position) {
         pivotDrive.setTargetPosition((int) (position));
-        ((DcMotorEx) pivotDrive).setVelocity(2100);
+        ((DcMotorEx) pivotDrive).setVelocity(500);
         pivotDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
