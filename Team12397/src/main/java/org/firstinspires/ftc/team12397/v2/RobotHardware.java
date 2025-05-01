@@ -38,7 +38,7 @@ public class RobotHardware {
     public Servo leftOutTake = null;
     public Servo rightOutTake = null;
     private Servo inClawPinch = null;
-    private Servo outClawPinch = null;
+    public Servo outClawPinch = null;
     private Servo inClawYaw = null;
     private Servo outClawYaw = null;
 
@@ -331,8 +331,8 @@ public class RobotHardware {
             leftOutTake.setPosition(0.8);
             rightOutTake.setPosition(1.01 - 0.8);
         } else if (position == 1){
-            leftOutTake.setPosition(0.35);
-            rightOutTake.setPosition(1.01 - 0.35);
+            leftOutTake.setPosition(0.3);
+            rightOutTake.setPosition(1.0 - 0.3);
         } else if (position == -1){
             leftOutTake.setPosition(0.55);
             rightOutTake.setPosition(1.01 - 0.55);
@@ -351,6 +351,10 @@ public class RobotHardware {
         rightOutTake.setPosition(1.01 - pos);
     }
 
+    public void setInClawPitchCustom(double pos){
+        pos = Math.max(0.05, pos);
+        inClawPitch.setPosition(pos);
+    }
 
 
     public void setInClawYaw(double pos){
@@ -375,9 +379,9 @@ public class RobotHardware {
      */
     public void setOutClawPinch(double pos){
         if (pos == 1) {
-            outClawPinch.setPosition(0.85);
+            outClawPinch.setPosition(0.36);
         } else {
-            outClawPinch.setPosition(0.52);
+            outClawPinch.setPosition(0);
         }
         // 0.85 closed , 0.46 open
 

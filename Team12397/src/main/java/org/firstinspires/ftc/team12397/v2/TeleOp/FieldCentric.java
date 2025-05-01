@@ -82,11 +82,11 @@ public class FieldCentric extends LinearOpMode {
             if ( (inClawPinch == 0 && pinchTimer > 4) && (inClawPitch == 1 && extendPosition > 0.4) ) {
                 // > 0.05 to prevent unprompted movement (trigger drift)
                 if (gamepad2.left_trigger > 0.05) {
-                    inClawYaw += 0.2 * gamepad2.left_trigger;
+                    inClawYaw += 0.115 * gamepad2.left_trigger;
                     inClawYaw = Math.min(1, inClawYaw);
                 }
                 if (gamepad2.right_trigger > 0.05) {
-                    inClawYaw -= 0.2 * gamepad2.right_trigger;
+                    inClawYaw -= 0.115 * gamepad2.right_trigger;
                     inClawYaw = Math.max(0, inClawYaw);
                 }
             } else {
@@ -127,20 +127,12 @@ public class FieldCentric extends LinearOpMode {
 
             //moves vertical slides
             if(gamepad1.dpad_up) {
-                slide = 114;
-            }if (gamepad1.dpad_left){
-                slide = robot.SLIDE_HIGH_BASKET;
+                slide = 1.5*robot.TICKS_PER_INCH;
+            }if (gamepad1.dpad_down){
+                slide = 0;
             }
 
-            if (-gamepad2.right_stick_y == 1){
-                slide = robot.SLIDE_HIGH_BASKET;
-            } else if (-gamepad2.right_stick_y == -1){
-                slide = 0;
-            } else if (gamepad2.right_stick_x == 1){
-                slide = 114;
-            } else if (gamepad2.right_stick_x == -1){
-                slide = robot.SLIDE_HANG_RUNG;
-            }
+
 
 
             if (gamepad2.dpad_right) {

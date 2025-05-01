@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.team12397.v2.TeleOp;
 
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -9,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.team12397.visionSystems.LLtdc;
 import org.firstinspires.ftc.team12397.v2.RobotHardware;
 import org.firstinspires.ftc.team12397.visionSystems.TdcReturnObject;
+@Disabled
 @TeleOp(name="LimeTeleOp", group="Robot")
 
 public class LimeTeleOp extends LinearOpMode {

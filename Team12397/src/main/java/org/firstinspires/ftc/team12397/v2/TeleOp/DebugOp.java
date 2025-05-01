@@ -23,6 +23,11 @@ public class DebugOp extends LinearOpMode {
     public static double leftOut = 0;
     public static double rightOut = 0;
 
+    public static double strafe = 0;
+    public static double drive = 0;
+    public static double turn = 0;
+    public static boolean driveOn = false;
+
     // Create a RobotHardware object to be used to access robot hardware.
     // Prefix any hardware functions with "robot." to access this class.
     RobotHardware robot = new RobotHardware(this);
@@ -71,6 +76,10 @@ public class DebugOp extends LinearOpMode {
             robot.setInClawPitchPos(inClawPitch);
 
             robot.setExtensionPos(extendPosition);
+
+            if (driveOn){
+                robot.driveFieldCentric(drive, strafe, turn);
+            }
 
             telemetry.addData("Slide Power",  "%.2f", slide);
             telemetry.addData("Extend %", "%.2f", extendPosition);
