@@ -8,8 +8,7 @@ public class AngleServoController {
 
     private final Servo servo;
     private final Telemetry tele;
-    private final ExponentialMovingAverage ema =
-            new ExponentialMovingAverage(AngleServoConfig.SMOOTHING_ALPHA);
+    private final ExponentialMovingAverage ema = new ExponentialMovingAverage(AngleServoConfig.SMOOTHING_ALPHA);
     private double lastErrorDeg = 0;
 
     private double currentPosition = AngleServoConfig.SERVO_CENTER;

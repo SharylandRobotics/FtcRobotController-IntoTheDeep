@@ -15,9 +15,8 @@ import org.firstinspires.ftc.team00000.v2.vision.ColorVisionSubsystem;
 public class SpecimenAligner extends LinearOpMode {
 
     @Override public void runOpMode() {
-
-        WebcamName cam      = hardwareMap.get(WebcamName.class, "Webcam 1");
-        Servo      wristSrv = hardwareMap.get(Servo.class,          "wrist_drive");
+        WebcamName cam = hardwareMap.get(WebcamName.class, "Webcam 1");
+        Servo wristSrv = hardwareMap.get(Servo.class, "wrist_drive");
 
         ColorVisionSubsystem vision = new ColorVisionSubsystem(cam);
         AngleServoController servo  = new AngleServoController(wristSrv, telemetry);
@@ -35,11 +34,11 @@ public class SpecimenAligner extends LinearOpMode {
             }
 
             telemetry.addData("Target?", vision.hasTarget());
-            telemetry.addData("Angle°",  "%.1f", vision.getAngle());
-            telemetry.addData("Area",    "%.0f", vision.getArea());
+            telemetry.addData("Angle°", "%.1f", vision.getAngle());
+            telemetry.addData("Area", "%.0f", vision.getArea());
             telemetry.update();
 
-            sleep(10);                    // ~100 Hz loop, AngleServoController throttles itself
+            sleep(10); // ~100 Hz loop, AngleServoController throttles itself
         }
 
         vision.stop();
