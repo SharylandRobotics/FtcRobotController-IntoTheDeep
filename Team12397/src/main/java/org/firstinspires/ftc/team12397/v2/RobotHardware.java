@@ -62,7 +62,7 @@ public class RobotHardware {
 
     IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
             RevHubOrientationOnRobot.LogoFacingDirection.UP,
-            RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
+            RevHubOrientationOnRobot.UsbFacingDirection.RIGHT));
 
 
     public RobotHardware(LinearOpMode OpMode) {myOpMode = OpMode;}
@@ -312,8 +312,12 @@ public class RobotHardware {
     public void setInClawPitchPos(double interpretedPos) {
         if (interpretedPos == 1){
             inClawPitch.setPosition(1);
+
         } else if (interpretedPos == 0){
             inClawPitch.setPosition(0.3);
+
+        } else if (interpretedPos == 0.5) {
+            inClawPitch.setPosition(0.5);
         } else {
             // tucked in (-1)
             inClawPitch.setPosition(0.05);

@@ -39,6 +39,9 @@ public class FieldCentric extends LinearOpMode {
 
         int outPinchTimer = 0;
         boolean outPinchToggle = false;
+
+        int pitchTimer = 0;
+        boolean pitchToggle = false;
         // initialize all the hardware, using the hardware class. See how clean and simple this is?
         robot.init();
 
@@ -77,9 +80,23 @@ public class FieldCentric extends LinearOpMode {
 
 
 
+            if (gamepad2.dpad_left){
+                if (pitchTimer >= 4) {
+                    pitchToggle = !pitchToggle;
+                    pitchTimer = 0;
+                }
+            }
+            if(pitchToggle) {
+                inClawPitch = 1;
+            }else if (inClawPitch != 0 || inClawPitch != -1){
+                inClawPitch = 0.5;
+            }
+
+
+
             // THESE NUMBERS ARE NOT SERVO POSITIONS! look in RobotHardware.setInClawYaw() for positions
             // run the nudge(r) process if claw isn't closed and claw isn't backwards and extender isn't back
-            if ( (inClawPinch == 0 && pinchTimer > 4) && (inClawPitch == 1 && extendPosition > 0.4) ) {
+            if ( (inClawPinch == 0 && pinchTimer > 4) && (inClawPitch >= 0.5 && extendPosition > 0.4) ) {
                 // > 0.05 to prevent unprompted movement (trigger drift)
                 if (gamepad2.left_trigger > 0.05) {
                     inClawYaw += 0.115 * gamepad2.left_trigger;
@@ -89,9 +106,6 @@ public class FieldCentric extends LinearOpMode {
                     inClawYaw -= 0.115 * gamepad2.right_trigger;
                     inClawYaw = Math.max(0, inClawYaw);
                 }
-            } else {
-                // if the claw is closed, wait for 5 thread loops (250 milis) and reset inClawYaw.
-                inClawYaw = 0;
             }
             robot.setInClawYaw(inClawYaw);
 
@@ -120,15 +134,15 @@ public class FieldCentric extends LinearOpMode {
             } else if (gamepad2.b) {
                 secondLeg = 0;
                 outClawYaw = 0;
-                inClawPitch = -1;
+                inClawPitch = -1; pitchToggle = false;
                 // servo to transfer tuck in pitch yaw to 0
             }
 
 
             //moves vertical slides
-            if(gamepad1.dpad_up) {
+            if(-gamepad2.right_stick_y == 1) {
                 slide = 1.5*robot.TICKS_PER_INCH;
-            }if (gamepad1.dpad_down){
+            }if (-gamepad2.right_stick_y == -1){
                 slide = 0;
             }
 
@@ -137,19 +151,20 @@ public class FieldCentric extends LinearOpMode {
 
             if (gamepad2.dpad_right) {
                 extendPosition = 0.4;
-                inClawPitch = 0;
+                inClawPitch = 0; pitchToggle = false;
                 secondLeg = 0.5;
                 inClawYaw = 0;
             } else if (gamepad2.dpad_up) {
                 extendPosition = 1;
-                inClawPitch = 1;
+                inClawPitch = 0.5;
                 pinchToggle = false;
                 inClawYaw = 0;
 
             } else if(gamepad2.dpad_down){
                 extendPosition = 0;
-                inClawPitch = 0;
+                inClawPitch = 0.5;
                 secondLeg = 0.5;
+                inClawYaw = 0;
             }else if (Math.round(Math.abs(gamepad2.left_stick_y*20)) != 0){
                 // if alex moves his left stick up/down more than 2.5% of maximum movement...
                 /* throttle extendPosition : prevents it from being a huge/small #
@@ -192,6 +207,7 @@ public class FieldCentric extends LinearOpMode {
             telemetry.update();
 
             // Pace this loop so hands move at a reasonable speed.
+            pitchTimer++;
             pinchTimer++;
             outPinchTimer++;
             sleep(50);

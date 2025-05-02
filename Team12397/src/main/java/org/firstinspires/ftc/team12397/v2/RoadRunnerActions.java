@@ -240,7 +240,7 @@ public class RoadRunnerActions {
 
         // class constructor & hardware mapper
         private OutClawYaw(HardwareMap hardwareMap) {
-            pincher = hardwareMap.get(Servo.class, "out_claw_yaw");
+            pincher = hardwareMap.get(Servo.class, "claw_out_yaw");
         }
 
         // actual action class/ do-er(s) -->

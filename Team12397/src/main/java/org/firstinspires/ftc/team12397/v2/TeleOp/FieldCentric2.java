@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.team12397.v2.RobotHardware;
 
 
@@ -14,6 +15,24 @@ public class FieldCentric2 extends LinearOpMode {
     // Create a RobotHardware object to be used to access robot hardware.
     // Prefix any hardware functions with "robot." to access this class.
     RobotHardware robot = new RobotHardware(this);
+
+    private final double OUTTAKE_MAX = 0.8;
+    private final double OUTTAKE_MIN = 0.3;
+    private final double OUTTAKE_MID = 0.55;
+
+    private final double EXTEND_MAX = 1;
+    private final double EXTEND_MID = 0.4;
+    private final double EXTEND_MIN = 0;
+
+    private final double PITCH_MAX = 1;
+    private final double PITCH_MID = 0.5;
+    private final double PITCH_MIN = 0;
+
+    private final double IN_YAW_MAX = 0.4225;
+    private final double IN_YAW_MIN = 0;
+
+    private final double OUT_YAW_MAX = 0.65;
+    private final double OUT_YAW_MIN = 0;
 
     enum states{
         RETRIEVE,
@@ -59,11 +78,19 @@ public class FieldCentric2 extends LinearOpMode {
         double strafe = 0;
         double turn = 0;
 
+        double inClawYaw = 0;
+        double outTakePos = 0;
+        double extendPos = 0;
+        double pitchPos = 0.5;
+
         int pinchTimer = 0;
         boolean pinchToggle = false;
 
         int outPinchTimer = 0;
         boolean outPinchToggle = false;
+
+        double YawTimer = 0;
+        double PitchTimer = 0;
 
         handle inClawPinch = handle.OPEN;
         handle outClawPinch = handle.OPEN;
@@ -82,8 +109,8 @@ public class FieldCentric2 extends LinearOpMode {
             drive = -gamepad1.left_stick_y;
             strafe = gamepad1.left_stick_x;
             turn  =  gamepad1.right_stick_x;
-
             robot.driveFieldCentric(drive, strafe, turn);
+
 
             if (gamepad2.left_bumper){
                 if (pinchTimer >= 4) {
@@ -110,21 +137,78 @@ public class FieldCentric2 extends LinearOpMode {
             robot.setOutClawPinch(outClawPinch.getIntVal());
             robot.setInClawPinch(inClawPinch.getIntVal());
 
+
+            // triggers move yaw if RETRIEVE, left one moves outTake back in if SCORE
             if (gamepad2.left_trigger != 0 || gamepad2.right_trigger != 0){
+
                 if (currentState == states.RETRIEVE){
+                    inClawYaw += 0.115 * gamepad2.left_trigger;
+                    inClawYaw = Math.min(1, inClawYaw);
+
+                    inClawYaw -= 0.115 * gamepad2.right_trigger;
+                    inClawYaw = Math.max(0, inClawYaw);
 
                 } else if (currentState == states.SCORE){
-
+                    outTakePos -= 0.1 * gamepad2.left_trigger;
+                    outTakePos = Math.max(OUTTAKE_MIN, outTakePos);
                 }
             }
 
-            if (gamepad2.dpad_up){
-                currentState = states.RETRIEVE;
+
+            // left stick extends extender in RETRIEVE,
+            if (gamepad2.left_stick_y != 0){
+                if (currentState == states.RETRIEVE){
+                    extendPos = Range.clip(extendPos, 0, 1);
+                    extendPos += -gamepad2.left_stick_y * 0.115;
+                }
+            }
+            // right stick button retracts and sets timers in RETRIEVE,
+            if (gamepad2.right_stick_button){
+                if (currentState == states.RETRIEVE){
+                    YawTimer = getRuntime();
+                    PitchTimer = getRuntime();
+                }
             }
 
+
+            // activates RETRIEVE, if tapped again flips pitch down
+            if (gamepad2.dpad_up){
+                if (currentState == states.RETRIEVE){
+                    if(pitchPos != 1) {
+                        pitchPos = 1;
+                    } else {
+                        pitchPos = 0.3;
+                    }
+                } else {
+                    currentState = states.RETRIEVE;
+                    extendPos = 1;
+                }
+            }
+            // activates ROAM
+            if (gamepad2.dpad_down){
+                currentState = states.ROAM;
+            }
+
+            // activates SCORE
             if (gamepad2.b){
                 currentState = states.SCORE;
             }
+
+            // TIMERS
+            if (YawTimer != 0 && (getRuntime() - YawTimer) > 0.25){
+                inClawYaw = 0;
+                YawTimer = 0;
+            }
+            if (PitchTimer != 0 && (getRuntime() - PitchTimer) > 0.1){
+                pitchPos = 0.3;
+                PitchTimer = 0;
+            }
+
+            robot.setExtensionPos(extendPos);
+            robot.setInClawYaw(inClawYaw);
+            // direct drive
+            robot.setInClawPitchCustom(pitchPos);
+            robot.setOutTakeCustom(outTakePos);
 
             pinchTimer++;
             outPinchTimer++;
