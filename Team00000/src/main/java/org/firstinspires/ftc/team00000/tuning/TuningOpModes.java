@@ -25,7 +25,7 @@ public final class TuningOpModes {
 
     // Set to true for competition builds so all tuning OpModes stay hidden.
     // Flip back to false whenever you want to calibrate again.
-    public static final boolean DISABLED = true;
+    public static final boolean DISABLED = false;
 
     private TuningOpModes() {}
 
