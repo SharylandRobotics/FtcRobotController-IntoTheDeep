@@ -283,7 +283,7 @@ public class RoadRunnerActions {
         private class dockOutTakePos implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                robotHW.setOutTakePos(1);
+                robotHW.setOutTakePos(0);
                 return false;
             }
         }
@@ -291,7 +291,7 @@ public class RoadRunnerActions {
         private class primeOutTakePos implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                robotHW.setOutTakePos(0);
+                robotHW.setOutTakePos(1);
                 return false;
             }
         }

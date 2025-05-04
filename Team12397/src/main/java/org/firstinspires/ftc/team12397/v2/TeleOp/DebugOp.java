@@ -60,7 +60,7 @@ public class DebugOp extends LinearOpMode {
             // interpreted drive, 1 closed, 0.7 open
             robot.setOutClawPinch(outClawPinch);
 
-            robot.setOutClawYaw(outClawYaw);
+            robot.outClawYaw.setPosition(outClawYaw);
 
 
 
@@ -73,7 +73,7 @@ public class DebugOp extends LinearOpMode {
                 robot.setOutTakePos(secondLeg);
             }
             // 1 down, 0.25 angled
-            robot.setInClawPitchPos(inClawPitch);
+            robot.setInClawPitchCustom(inClawPitch);
 
             robot.setExtensionPos(extendPosition);
 

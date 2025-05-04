@@ -40,7 +40,27 @@ public class RobotHardware {
     private Servo inClawPinch = null;
     public Servo outClawPinch = null;
     private Servo inClawYaw = null;
-    private Servo outClawYaw = null;
+    public Servo outClawYaw = null;
+
+    private final double OUTTAKE_MAX = 0.8;
+    private final double OUTTAKE_MIN = 0.32;
+    private final double OUTTAKE_MID = 0.8;
+
+    private final double EXTEND_MAX = 1;
+    private final double EXTEND_MID = 0.4;
+    private final double EXTEND_MIN = 0;
+
+    private final double PITCH_MAX = 1;
+    private final double PITCH_MID = 0.65;
+    private final double PITCH_MIN = 0.15;
+
+    private final double IN_YAW_MAX = 0.4225;
+    private final double IN_YAW_MIN = 0;
+
+    private final double OUT_YAW_MAX = 0.7;
+    private final double OUT_YAW_MIN = 0.04;
+
+    private final double SLIDE_RUNG = 1.5;
 
     public int leftFrontTarget;
     public int leftBackTarget;
@@ -332,11 +352,11 @@ public class RobotHardware {
      */
     public void setOutTakePos(double position) {
         if (position == 0){
-            leftOutTake.setPosition(0.8);
-            rightOutTake.setPosition(1.01 - 0.8);
+            leftOutTake.setPosition(OUTTAKE_MID);
+            rightOutTake.setPosition(1.01 - OUTTAKE_MID);
         } else if (position == 1){
-            leftOutTake.setPosition(0.3);
-            rightOutTake.setPosition(1.0 - 0.3);
+            leftOutTake.setPosition(OUTTAKE_MIN);
+            rightOutTake.setPosition(1.0 - OUTTAKE_MIN);
         } else if (position == -1){
             leftOutTake.setPosition(0.55);
             rightOutTake.setPosition(1.01 - 0.55);
@@ -356,22 +376,22 @@ public class RobotHardware {
     }
 
     public void setInClawPitchCustom(double pos){
-        pos = Math.max(0.05, pos);
+        pos = Math.max(PITCH_MIN, pos);
         inClawPitch.setPosition(pos);
     }
 
 
     public void setInClawYaw(double pos){
-        pos = Math.min(0.65, pos); // we don't filter for (-) bc it will always go to 0.
-        inClawYaw.setPosition(pos*0.65);
+        pos = Math.min(IN_YAW_MAX, pos); // we don't filter for (-) bc it will always go to 0.
+        inClawYaw.setPosition(pos);
         // 0 is mid, 0.3 is to the left 90 deg!MAX!
     }
 
     public void setOutClawYaw(double interpretedPos){
         if (interpretedPos == 1) {
-            outClawYaw.setPosition(0.65);
+            outClawYaw.setPosition(OUT_YAW_MAX);
         } else {
-            outClawYaw.setPosition(0);
+            outClawYaw.setPosition(OUT_YAW_MIN);
         }
 
         // 0 default, 0.65 is flipped
