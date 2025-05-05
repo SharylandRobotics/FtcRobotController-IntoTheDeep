@@ -15,25 +15,25 @@ public class FieldCentric2 extends LinearOpMode {
     // Prefix any hardware functions with "robot." to access this class.
     RobotHardware robot = new RobotHardware(this);
 
-    private final double OUTTAKE_MAX = 0.8;
-    private final double OUTTAKE_MIN = 0.32;
-    private final double OUTTAKE_MID = 0.8;
+    private final double OUTTAKE_MAX = robot.OUTTAKE_MAX;
+    private final double OUTTAKE_MIN = robot.OUTTAKE_MIN;
+    private final double OUTTAKE_MID = robot.OUTTAKE_MID;
 
-    private final double EXTEND_MAX = 1;
-    private final double EXTEND_MID = 0.4;
-    private final double EXTEND_MIN = 0;
+    private final double EXTEND_MAX = robot.EXTEND_MAX;
+    private final double EXTEND_MID = robot.EXTEND_MID;
+    private final double EXTEND_MIN = robot.EXTEND_MIN;
 
-    private final double PITCH_MAX = 1;
-    private final double PITCH_MID = 0.65;
-    private final double PITCH_MIN = 0.15;
+    private final double PITCH_MAX = robot.PITCH_MAX;
+    private final double PITCH_MID = robot.PITCH_MID;
+    private final double PITCH_MIN = robot.PITCH_MIN;
 
-    private final double IN_YAW_MAX = 0.4225;
-    private final double IN_YAW_MIN = 0;
+    private final double IN_YAW_MAX = robot.IN_YAW_MAX;
+    private final double IN_YAW_MIN = robot.IN_YAW_MIN;
 
-    private final double OUT_YAW_MAX = 0.7;
-    private final double OUT_YAW_MIN = 0.04;
+    private final double OUT_YAW_MAX = robot.OUT_YAW_MAX;
+    private final double OUT_YAW_MIN = robot.OUT_YAW_MIN;
 
-    private final double SLIDE_RUNG = 1.5;
+    private final double SLIDE_RUNG = robot.SLIDE_RUNG;
 
     enum states{
         RETRIEVE,
@@ -198,6 +198,7 @@ public class FieldCentric2 extends LinearOpMode {
                         pitchPos = PITCH_MID;
                     }
                 } else {
+                    dpadUpTimer = getRuntime();
                     currentState = states.RETRIEVE;
                     extendPos = EXTEND_MAX;
                 }
@@ -210,7 +211,7 @@ public class FieldCentric2 extends LinearOpMode {
                 inClawYaw = IN_YAW_MIN;
             }
 
-            // activates SCORE & toggles outTake
+            // activates SCORE & toggles outTake activities
             if (gamepad2.b){
                 if (currentState == states.SCORE && (getRuntime() - bTimer) > 0.25) {
                     bTimer = getRuntime();

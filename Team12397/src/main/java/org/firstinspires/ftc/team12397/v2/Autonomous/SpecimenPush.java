@@ -29,21 +29,10 @@ public class SpecimenPush extends LinearOpMode {
         Pose2d swerveBeamPose2 = new Pose2d(swerveBeamPose.position.x + 2.125 + 5, swerveBeamPose.position.y+20.5, -Math.PI/2);
         Pose2d sample1Pose = new Pose2d(swerveBeamPose2.position.x + 11.625, swerveBeamPose2.position.y-19.375, -Math.PI/2);
 
-        Pose2d drop1Pose = new Pose2d(57,-48, Math.toRadians(90));
-
-        Pose2d sample2Pose = new Pose2d(56.5, -34, Math.toRadians(90));
-        Pose2d drop2Pose = new Pose2d(57, -48, Math.toRadians(90));
-
-        Pose2d sample3Pose = new Pose2d(57, -38, Math.toRadians(50));
-        Pose2d drop3Pose = new Pose2d(48, -55.1, Math.toRadians(90));
-
-        Pose2d rungPose = new Pose2d(9.5, -43.25, Math.toRadians(90)); // subtracted 3.25 in y
-        Pose2d rungPose2 = new Pose2d(11, -42, Math.toRadians(90));
-        Pose2d rungPose3 = new Pose2d(5, -42, Math.toRadians(90));
-
-
-
-        Pose2d pickupPose = new Pose2d(38, drop3Pose.position.y + 0.3, Math.toRadians(90));
+        // this autonomous is meant to score a preload specimen, push 3 samples, and score as many specimen
+        // as possible. Currently, the path goes to the rungs, then splines ahead of the 1st sample and tries to push it.
+        // Attempt to finish this by trial and error as the roadrunner is not as accurate as meant to be.
+        // replace anything as you see fit as long as you make progress :)
 
         Action Leg1 = drive.actionBuilder(initialPose)
                 // score FIRST SPECIMEN
