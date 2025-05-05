@@ -21,7 +21,7 @@ public class MeepMeepAllianceTesting {
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(9.2, -62.3, 0))
 
                 // score FIRST SPECIMEN
-                        .setTangent(Math.PI/2)
+                .setTangent(Math.PI/2)
                 .lineToYSplineHeading(-34, -Math.PI/2)
                 .setTangent(-Math.PI /8)
 
