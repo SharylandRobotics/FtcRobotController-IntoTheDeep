@@ -19,57 +19,72 @@ public class SpecimenPush extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Pose2d initialPose = new Pose2d(9.2, -62.3, 0);//12.75
+        Pose2d initialPose = new Pose2d(9.2, -62.3, -Math.PI/2);//12.75
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
 
 
-        Pose2d initialRungPose = new Pose2d(initialPose.position.x, -35.75+12, -Math.PI/2);
+        Pose2d initialRungPose = new Pose2d(initialPose.position.x, -35.75, -Math.PI/2);
 
-        Pose2d swerveBeamPose = new Pose2d(initialRungPose.position.x + 25.05 + 9, initialRungPose.position.y+2.875, -Math.PI/2);
-        Pose2d swerveBeamPose2 = new Pose2d(swerveBeamPose.position.x + 2.125 + 5, swerveBeamPose.position.y+20.5, -Math.PI/2);
-        Pose2d sample1Pose = new Pose2d(swerveBeamPose2.position.x + 11.625, swerveBeamPose2.position.y-19.375, -Math.PI/2);
-
-        Pose2d drop1Pose = new Pose2d(57,-48, Math.toRadians(90));
-
-        Pose2d sample2Pose = new Pose2d(56.5, -34, Math.toRadians(90));
-        Pose2d drop2Pose = new Pose2d(57, -48, Math.toRadians(90));
-
-        Pose2d sample3Pose = new Pose2d(57, -38, Math.toRadians(50));
-        Pose2d drop3Pose = new Pose2d(48, -55.1, Math.toRadians(90));
-
-        Pose2d rungPose = new Pose2d(9.5, -43.25, Math.toRadians(90)); // subtracted 3.25 in y
-        Pose2d rungPose2 = new Pose2d(11, -42, Math.toRadians(90));
-        Pose2d rungPose3 = new Pose2d(5, -42, Math.toRadians(90));
+        Pose2d swerveBeamPose = new Pose2d(initialRungPose.position.x + 27.8 , initialRungPose.position.y, -Math.PI/2);
+        Pose2d swerveBeamPose2 = new Pose2d(swerveBeamPose.position.x , swerveBeamPose.position.y + 20.5, -Math.PI/2);
+        Pose2d sample1Pose = new Pose2d(swerveBeamPose2.position.x + 11.625, swerveBeamPose2.position.y, -Math.PI/2);
+        Pose2d sample1Pose2 = new Pose2d(sample1Pose.position.x, sample1Pose.position.y - 14.5, -Math.PI/2);
+        Pose2d sample1Pose3 = new Pose2d(sample1Pose2.position.x, swerveBeamPose2.position.y, -Math.PI/2);
+        Pose2d sample2Pose = new Pose2d(sample1Pose3.position.x + 6, sample1Pose3.position.y, -Math.PI/2);
+        Pose2d sample2Pose2 = new Pose2d(sample2Pose.position.x, sample2Pose.position.y - 14.5, -Math.PI/2);
 
 
 
-        Pose2d pickupPose = new Pose2d(38, drop3Pose.position.y + 0.3, Math.toRadians(90));
 
         Action Leg1 = drive.actionBuilder(initialPose)
                 // score FIRST SPECIMEN
                 .setTangent(Math.PI/2)
-                .lineToYLinearHeading(initialRungPose.position.y, -Math.PI/2)
+                .lineToYConstantHeading(initialRungPose.position.y)
                 .build();
 
         Action Leg2 = drive.actionBuilder(initialRungPose)
-                .setTangent(-Math.PI /8)
+                .setTangent(0)
                 .waitSeconds(0)
                 // swerve around beam
-                .splineToConstantHeading(swerveBeamPose.position, -Math.PI/2)
+                .lineToXConstantHeading(swerveBeamPose.position.x)
                 .waitSeconds(0)
                 // continue swerve ahead of 1st sample
-                .setTangent(Math.PI/3)
-                .splineToConstantHeading(swerveBeamPose2.position, -Math.PI/2)
+                .setTangent(Math.PI/2)
+                .lineToYConstantHeading(swerveBeamPose2.position.y)
                 .waitSeconds(0)
                 .build();
 
-        Action Leg3 = drive.actionBuilder(sample1Pose)
+        Action Leg3 = drive.actionBuilder(swerveBeamPose2)
                 // sweep sample into robot
-                .setTangent(Math.PI/4)
-                .splineToConstantHeading(sample1Pose.position, -Math.PI/2)
+                .setTangent(0)
+                .lineToXConstantHeading(sample1Pose.position.x)
                 // push sample into zone
-                .lineToYConstantHeading(-47)
+                .setTangent(Math.PI/2)
+                .lineToYConstantHeading(sample1Pose2.position.y)
+                .waitSeconds(0)
                         .build();
+
+        Action Leg4 = drive.actionBuilder(sample1Pose2)
+                // sweep sample into robot
+                .setTangent(Math.PI/2)
+                .lineToYConstantHeading(sample1Pose3.position.y)
+                // push sample into zone
+                .setTangent(0)
+                .lineToXConstantHeading(sample2Pose.position.x)
+                .waitSeconds(0)
+                .build();
+
+        Action Leg5 = drive.actionBuilder(sample1Pose2)
+                // sweep sample into robot
+                .setTangent(Math.PI/2)
+                .lineToYConstantHeading(sample1Pose3.position.y)
+                // push sample into zone
+                .setTangent(0)
+                .lineToXConstantHeading(sample2Pose.position.x)
+                .waitSeconds(0)
+                .build();
+
+
 
 
 

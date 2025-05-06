@@ -15,30 +15,31 @@ public class FieldCentric2 extends LinearOpMode {
     // Prefix any hardware functions with "robot." to access this class.
     RobotHardware robot = new RobotHardware(this);
 
-    private final double OUTTAKE_MAX = 0.8;
-    private final double OUTTAKE_MIN = 0.32;
-    private final double OUTTAKE_MID = 0.8;
+    private final double OUTTAKE_MAX = robot.OUTTAKE_MAX;
+    private final double OUTTAKE_MIN = robot.OUTTAKE_MIN;
+    private final double OUTTAKE_MID = robot.OUTTAKE_MID;
 
-    private final double EXTEND_MAX = 1;
-    private final double EXTEND_MID = 0.4;
-    private final double EXTEND_MIN = 0;
+    private final double EXTEND_MAX = robot.EXTEND_MAX;
+    private final double EXTEND_MID = robot.EXTEND_MID;
+    private final double EXTEND_MIN = robot.EXTEND_MIN;
 
-    private final double PITCH_MAX = 1;
-    private final double PITCH_MID = 0.65;
-    private final double PITCH_MIN = 0.15;
+    private final double PITCH_MAX = robot.PITCH_MAX;
+    private final double PITCH_MID = robot.PITCH_MID;
+    private final double PITCH_MIN = robot.PITCH_MIN;
 
-    private final double IN_YAW_MAX = 0.4225;
-    private final double IN_YAW_MIN = 0;
+    private final double IN_YAW_MAX = robot.IN_YAW_MAX;
+    private final double IN_YAW_MIN = robot.IN_YAW_MIN;
 
-    private final double OUT_YAW_MAX = 0.7;
-    private final double OUT_YAW_MIN = 0.04;
+    private final double OUT_YAW_MAX = robot.OUT_YAW_MAX;
+    private final double OUT_YAW_MIN = robot.OUT_YAW_MIN;
 
-    private final double SLIDE_RUNG = 1.5;
+    private final double SLIDE_RUNG = robot.SLIDE_RUNG;
 
     enum states{
         RETRIEVE,
         ROAM,
-        SCORE
+        SCORE,
+        SCOREB
     }
 
     enum handle{
@@ -91,8 +92,8 @@ public class FieldCentric2 extends LinearOpMode {
         int outPinchTimer = 0;
         boolean outPinchToggle = false;
 
-        double YawTimer = 0;
-        double PitchTimer = 0;
+        double OutTimer = 0;
+        double PinchTimer = 0;
         double dpadUpTimer = 0;
         double bTimer = 0;
 
@@ -117,12 +118,10 @@ public class FieldCentric2 extends LinearOpMode {
             strafe = gamepad1.left_stick_x;
             turn  =  gamepad1.right_stick_x;
             robot.driveFieldCentric(drive, strafe, turn);
-            if (gamepad1.left_trigger != 0 || gamepad1.right_trigger != 0){
-                slideFudge += 0.05 * gamepad1.left_trigger;
-                slideFudge = Math.min(1.5, slideFudge);
-
-                slideFudge -= 0.05 * gamepad1.right_trigger;
-                slideFudge = Math.max(-1.5, slideFudge);
+            if (gamepad1.right_bumper && outTakePos == robot.OUTTAKE_ALT && slide == SLIDE_RUNG){
+                slide = robot.SLIDE_ALT;
+            } else if (gamepad1.left_bumper && outTakePos == robot.OUTTAKE_ALT && slide == SLIDE_RUNG) {
+                slide = SLIDE_RUNG;
             }
 
 
@@ -162,9 +161,6 @@ public class FieldCentric2 extends LinearOpMode {
                     inClawYaw -= 0.115 * gamepad2.right_trigger;
                     inClawYaw = Math.max(0, inClawYaw);
 
-                } else if (currentState == states.SCORE){
-                    outTakePos -= 0.01 * gamepad2.left_trigger;
-                    outTakePos = Math.min(OUTTAKE_MID, outTakePos);
                 }
                 if (pitchPos < 0.65){
                     inClawYaw = 0;
@@ -179,11 +175,18 @@ public class FieldCentric2 extends LinearOpMode {
                     extendPos += -gamepad2.left_stick_y * 0.115;
                 }
             }
-            // right stick button retracts and sets timers in RETRIEVE,
+            // right stick button retracts and sets timers in SCOREB,
             if (gamepad2.right_stick_button){
-                if (currentState == states.RETRIEVE){
-                    YawTimer = getRuntime();
-                    PitchTimer = getRuntime();
+                if (currentState == states.SCOREB){
+                    outTakePos = OUTTAKE_MID+0.02;
+                    pitchPos = robot.PITCH_TRANS+0.05;
+                    extendPos = robot.EXTEND_TRANS;
+                    inClawYaw = IN_YAW_MIN;
+                    outClawYaw = OUT_YAW_MIN;
+                    OutTimer = getRuntime();
+                    PinchTimer = getRuntime();
+                } else {
+                    currentState = states.SCOREB;
                 }
             }
 
@@ -198,6 +201,7 @@ public class FieldCentric2 extends LinearOpMode {
                         pitchPos = PITCH_MID;
                     }
                 } else {
+                    dpadUpTimer = getRuntime();
                     currentState = states.RETRIEVE;
                     extendPos = EXTEND_MAX;
                 }
@@ -210,17 +214,30 @@ public class FieldCentric2 extends LinearOpMode {
                 inClawYaw = IN_YAW_MIN;
             }
 
-            // activates SCORE & toggles outTake
+            // activates SCORE & toggles outTake activities
             if (gamepad2.b){
                 if (currentState == states.SCORE && (getRuntime() - bTimer) > 0.25) {
                     bTimer = getRuntime();
-                    if (outTakePos != OUTTAKE_MIN) {
-                        outTakePos = OUTTAKE_MIN;
+                    if (outTakePos != robot.OUTTAKE_ALT) {
+                        outTakePos = robot.OUTTAKE_ALT;
                         outClawYaw = 1;
-                        slide = 1.5;
+                        slide = SLIDE_RUNG;
                     } else if (outTakePos != OUTTAKE_MID) {
                         outTakePos = OUTTAKE_MID;
-                        slide = 0; slideFudge = 0;
+                        slide = 0;
+                        slideFudge = 0;
+                        outClawYaw = 0;
+                    }
+                } else if (currentState == states.SCOREB && (getRuntime() - bTimer) > 0.25){
+                    bTimer = getRuntime();
+                    if (outTakePos != robot.OUTTAKE_ALT) {
+                        outTakePos = robot.OUTTAKE_ALT;
+                        outClawYaw = 0;
+                        slide = SLIDE_RUNG;
+                    } else if (outTakePos != OUTTAKE_MID) {
+                        outTakePos = OUTTAKE_MID;
+                        slide = 44.5-18;
+                        slideFudge = 0;
                         outClawYaw = 0;
                     }
                 } else {
@@ -237,19 +254,19 @@ public class FieldCentric2 extends LinearOpMode {
             }
 
             // TIMERS
-            if (YawTimer != 0 && (getRuntime() - YawTimer) > 0.25){
-                inClawYaw = 0;
-                YawTimer = 0;
+            if (OutTimer != 0 && (getRuntime() - OutTimer) > 0.5){
+                outClawPinch = handle.CLOSE;
+                OutTimer = 0;
             }
-            if (PitchTimer != 0 && (getRuntime() - PitchTimer) > 0.1){
-                pitchPos = 0.3;
-                PitchTimer = 0;
+            if (PinchTimer != 0 && (getRuntime() - PinchTimer) > 1){
+                inClawPinch = handle.OPEN;
+                PinchTimer = 0;
             }
 
             robot.setExtensionPos(extendPos);
             robot.setInClawYaw(inClawYaw);
             // direct drive
-            robot.setSlidePosition((slide*robot.TICKS_PER_INCH) + (slideFudge* robot.TICKS_PER_INCH));
+            robot.setSlidePosition((slide*robot.TICKS_PER_INCH));
             robot.setInClawPitchCustom(pitchPos);
             robot.setOutTakeCustom(outTakePos);
             robot.setOutClawYaw(outClawYaw);
