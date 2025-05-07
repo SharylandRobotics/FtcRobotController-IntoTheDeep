@@ -42,13 +42,15 @@ public class RobotHardware {
     private Servo inClawYaw = null;
     public Servo outClawYaw = null;
 
-    public final double OUTTAKE_ALT = 0.1;
-    public final double SLIDE_ALT = 7;
+    public final double OUTTAKE_ALT = 0.125;
+    public final double OUTTAKE_BALT = 0.35;
+    public final double OUTTAKE_PARALLEL = 0.45;
+    public final double SLIDE_ALT = 10;
     public final double OUTTAKE_MAX = 0.8;
     public final double OUTTAKE_MIN = 0.32;
     public final double OUTTAKE_MID = 0.8;
 
-    public final double EXTEND_MAX = 0.9;
+    public final double EXTEND_MAX = 0.96;
     public final double EXTEND_MID = 0.4;
     public final double EXTEND_MIN = 0;
 
@@ -62,9 +64,9 @@ public class RobotHardware {
     public final double OUT_YAW_MAX = 0.7;
     public final double OUT_YAW_MIN = 0.04;
 
-    public final double SLIDE_RUNG = 15;
+    public final double SLIDE_RUNG = 17;
     public final double PITCH_TRANS = 0.3;
-    public final double EXTEND_TRANS = 0.4;
+    public final double EXTEND_TRANS = 0.5;
 
     public int leftFrontTarget;
     public int leftBackTarget;
@@ -325,7 +327,7 @@ public class RobotHardware {
      */
     public void setExtensionPos(double position){
         //whatever value you subtract from lextend should be added to rextend and vise versa
-        position = Math.min(1, position);
+        position = Math.min(EXTEND_MAX, position);
         position = Math.max(0, position);
 
         lExtend.setPosition(1 - (position*0.25));
@@ -407,7 +409,7 @@ public class RobotHardware {
      */
     public void setOutClawPinch(double pos){
         if (pos == 1) {
-            outClawPinch.setPosition(0.38);
+            outClawPinch.setPosition(0.43);
         } else {
             outClawPinch.setPosition(0);
         }

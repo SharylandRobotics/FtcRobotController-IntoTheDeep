@@ -54,7 +54,7 @@ public class RoadRunnerActions {
 
         // usable method/ action class shortcut
         public Action verticalSlidesToPos(double position){
-            return new slideToPos(position);
+            return new slideToPos(position*robotHW.TICKS_PER_INCH);
         }
     }
 

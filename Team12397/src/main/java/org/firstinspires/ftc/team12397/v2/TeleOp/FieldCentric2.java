@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
+import org.firstinspires.ftc.team12397.v2.RoadRunnerActions;
 import org.firstinspires.ftc.team12397.v2.RobotHardware;
 
 
@@ -95,6 +96,7 @@ public class FieldCentric2 extends LinearOpMode {
         double OutTimer = 0;
         double PinchTimer = 0;
         double dpadUpTimer = 0;
+        double slideUpTimer = 0;
         double bTimer = 0;
 
         double slide = 0;
@@ -120,8 +122,10 @@ public class FieldCentric2 extends LinearOpMode {
             robot.driveFieldCentric(drive, strafe, turn);
             if (gamepad1.right_bumper && outTakePos == robot.OUTTAKE_ALT && slide == SLIDE_RUNG){
                 slide = robot.SLIDE_ALT;
+                OutTimer = getRuntime();
             } else if (gamepad1.left_bumper && outTakePos == robot.OUTTAKE_ALT && slide == SLIDE_RUNG) {
                 slide = SLIDE_RUNG;
+                OutTimer = 0;
             }
 
 
@@ -178,13 +182,14 @@ public class FieldCentric2 extends LinearOpMode {
             // right stick button retracts and sets timers in SCOREB,
             if (gamepad2.right_stick_button){
                 if (currentState == states.SCOREB){
-                    outTakePos = OUTTAKE_MID+0.02;
+                    outTakePos = OUTTAKE_MID+0.05;
                     pitchPos = robot.PITCH_TRANS+0.05;
                     extendPos = robot.EXTEND_TRANS;
                     inClawYaw = IN_YAW_MIN;
                     outClawYaw = OUT_YAW_MIN;
                     OutTimer = getRuntime();
                     PinchTimer = getRuntime();
+                    // disable until above confirmed. slideUpTimer = getRuntime();
                 } else {
                     currentState = states.SCOREB;
                 }
@@ -225,23 +230,21 @@ public class FieldCentric2 extends LinearOpMode {
                     } else if (outTakePos != OUTTAKE_MID) {
                         outTakePos = OUTTAKE_MID;
                         slide = 0;
-                        slideFudge = 0;
                         outClawYaw = 0;
                     }
                 } else if (currentState == states.SCOREB && (getRuntime() - bTimer) > 0.25){
                     bTimer = getRuntime();
-                    if (outTakePos != robot.OUTTAKE_ALT) {
-                        outTakePos = robot.OUTTAKE_ALT;
+                    if (outTakePos != robot.OUTTAKE_BALT) {
+                        outTakePos = robot.OUTTAKE_BALT;
                         outClawYaw = 0;
-                        slide = SLIDE_RUNG;
-                    } else if (outTakePos != OUTTAKE_MID) {
-                        outTakePos = OUTTAKE_MID;
-                        slide = 44.5-18;
-                        slideFudge = 0;
+                    } else if (outTakePos != robot.OUTTAKE_PARALLEL) {
+                        outTakePos = robot.OUTTAKE_PARALLEL;
                         outClawYaw = 0;
                     }
                 } else {
-                    currentState = states.SCORE;
+                    if(currentState!= states.SCOREB){
+                        currentState = states.SCORE;
+                    }
                 }
             }
 
@@ -255,12 +258,17 @@ public class FieldCentric2 extends LinearOpMode {
 
             // TIMERS
             if (OutTimer != 0 && (getRuntime() - OutTimer) > 0.5){
-                outClawPinch = handle.CLOSE;
+                outPinchToggle = true;
                 OutTimer = 0;
             }
             if (PinchTimer != 0 && (getRuntime() - PinchTimer) > 1){
-                inClawPinch = handle.OPEN;
+                pinchToggle = true;
                 PinchTimer = 0;
+            }
+            if (slideUpTimer != 0 && (getRuntime() - slideUpTimer) > 1.75){
+                slide = 42.5 - 18.5;
+                slideUpTimer = 0;
+                outTakePos = robot.OUTTAKE_PARALLEL;
             }
 
             robot.setExtensionPos(extendPos);
