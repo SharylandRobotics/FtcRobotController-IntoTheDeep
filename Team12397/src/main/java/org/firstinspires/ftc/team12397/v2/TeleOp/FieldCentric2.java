@@ -18,7 +18,7 @@ public class FieldCentric2 extends LinearOpMode {
 
     private final double OUTTAKE_MAX = robot.OUTTAKE_MAX;
     private final double OUTTAKE_MIN = robot.OUTTAKE_MIN;
-    private final double OUTTAKE_MID = robot.OUTTAKE_MID;
+    private final double OUTTAKE_MID = robot.OUTTAKE_MID+0.01;
 
     private final double EXTEND_MAX = robot.EXTEND_MAX;
     private final double EXTEND_MID = robot.EXTEND_MID;
@@ -82,7 +82,7 @@ public class FieldCentric2 extends LinearOpMode {
         double turn = 0;
 
         double inClawYaw = 0;
-        double outTakePos = 0.55;
+        double outTakePos = OUTTAKE_MID;
         double extendPos = 0;
         double pitchPos = 0.5;
         double outClawYaw = 0;
@@ -262,7 +262,7 @@ public class FieldCentric2 extends LinearOpMode {
                 OutTimer = 0;
             }
             if (PinchTimer != 0 && (getRuntime() - PinchTimer) > 1){
-                pinchToggle = true;
+                pinchToggle = false;
                 PinchTimer = 0;
             }
             if (slideUpTimer != 0 && (getRuntime() - slideUpTimer) > 1.75){

@@ -53,18 +53,17 @@ public class MeepMeepAllianceTesting {
                 .build();
 
                  */
+
+        Pose2d eigthPose = new Pose2d(10, -39.3, -Math.PI/2);
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(95, 95, 3.2, 3.6, 15.75)
                 .setDimensions(15.7,17.2)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(ThirdPose)
-                .waitSeconds(0.5)
-                .setTangent(0)
-                .lineToX(5)
-                .setTangent(Math.PI / 2)
-                .lineToY(FifthPose.position.y)
+        myBot.runAction(myBot.getDrive().actionBuilder(eigthPose)
+                .setTangent(Math.toRadians(-45))
+                .splineToConstantHeading(new Vector2d(seventhPose.position.x, seventhPose.position.y), Math.toRadians(-90))
                 .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)

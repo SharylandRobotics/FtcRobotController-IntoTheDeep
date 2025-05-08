@@ -64,7 +64,7 @@ public class RobotHardware {
     public final double OUT_YAW_MAX = 0.7;
     public final double OUT_YAW_MIN = 0.04;
 
-    public final double SLIDE_RUNG = 17;
+    public final double SLIDE_RUNG = 16;
     public final double PITCH_TRANS = 0.3;
     public final double EXTEND_TRANS = 0.5;
 
@@ -409,7 +409,7 @@ public class RobotHardware {
      */
     public void setOutClawPinch(double pos){
         if (pos == 1) {
-            outClawPinch.setPosition(0.43);
+            outClawPinch.setPosition(0.38);
         } else {
             outClawPinch.setPosition(0);
         }
