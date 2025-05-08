@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.*;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.team12397.MecanumDrive;
 import org.firstinspires.ftc.team12397.v2.RoadRunnerActions;
@@ -11,6 +12,7 @@ import org.firstinspires.ftc.team12397.v2.RobotHardware;
 
 import java.lang.Math;
 
+@Disabled
 @Autonomous(name="Specimen Push", group="Alliance")
 public class SpecimenPush extends LinearOpMode {
 

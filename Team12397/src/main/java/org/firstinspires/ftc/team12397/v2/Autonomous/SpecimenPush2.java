@@ -44,14 +44,15 @@ public class SpecimenPush2 extends LinearOpMode {
         Action tab2 = drive.actionBuilder(SecondPose)
                 .setTangent(0)
                 .lineToX(37)
-                .setTangent(Math.PI / 2)
+                .setTangent(Math.PI/2)
                 .splineToConstantHeading(new Vector2d(47, -5), 0)
                 .setTangent(Math.PI / 2)
                 .lineToY(-54)
                 .setTangent(Math.PI / 2)
                 .splineToConstantHeading(new Vector2d(59, -5), 0)
                 .setTangent(Math.PI / 2)
-                .lineToY(-60)
+                .lineToY(-61.25)
+                // pickup
                 .waitSeconds(.75)
                 .lineToY(ThirdPose.position.y)
                 .build();

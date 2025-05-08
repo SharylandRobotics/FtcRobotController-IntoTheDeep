@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.team12397.v2.TeleOp;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.team12397.v2.RobotHardware;
 
-
+@Disabled
 @TeleOp(name="Robot Centric (Duo)", group="Robot")
 
 public class FieldCentric extends LinearOpMode {
