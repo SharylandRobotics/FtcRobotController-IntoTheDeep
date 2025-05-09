@@ -12,15 +12,14 @@ import org.firstinspires.ftc.team12397.v2.RobotHardware;
 
 import java.lang.Math;
 
-@Disabled
 @Autonomous(name="Specimen Push", group="Alliance")
 public class SpecimenPush extends LinearOpMode {
 
     RobotHardware robot = new RobotHardware(this);
     RoadRunnerActions actionLib = new RoadRunnerActions(robot, this);
     Pose2d initialPose = new Pose2d(9.5, -61.25, -Math.PI / 2);
-    MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
-    Pose2d latestPose = drive.localizer.getPose();
+    MecanumDrive drive;
+    Pose2d latestPose = new Pose2d(9.5, -37.9, -Math.PI / 2);;
 
     private Action updatePose(){
         return (TelemetryPacket packet) -> {
@@ -32,8 +31,9 @@ public class SpecimenPush extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
 
-        robot.init();
+        robot.init(true);
 
         RoadRunnerActions.In in = actionLib.new In();
         RoadRunnerActions.Out out = actionLib.new Out();
@@ -83,50 +83,16 @@ public class SpecimenPush extends LinearOpMode {
                 // score
                 .build();
 
-        Action drivePATH = drive.actionBuilder(latestPose)
-                // start action 1
-                .setTangent(Math.toRadians(0))
-                .splineToConstantHeading(beamPose1.position, Math.toRadians(30))
-                .splineToConstantHeading(beamPose2.position, Math.toRadians(30))
-                .splineToConstantHeading(beamCurve.position, Math.toRadians(-90))
-                .lineToYConstantHeading(pushEndPose1.position.y)
-
-                .lineToYConstantHeading(pushStartPose.position.y)
-                .splineToConstantHeading(pushCurvePose.position, Math.toRadians(0))
-                .splineToConstantHeading(pushCurvePose2.position, Math.toRadians(-90))
-                .lineToYConstantHeading(pushEndPose2.position.y)
-
-                .lineToYConstantHeading(pushStartPoseW.position.y)
-                .splineToConstantHeading(pushCurvePoseW.position, Math.toRadians(45))
-                .splineToConstantHeading(pushCurvePose2W.position, Math.toRadians(-90))
-                .lineToYConstantHeading(pushEndPose2W.position.y)
-
-                .splineToConstantHeading(mateCurve.position, Math.toRadians(-90))
-                // end action 1
-                .build();
-
-        Action scoreBreakPATH = drive.actionBuilder(latestPose)
-                .setTangent(Math.toRadians(150))
-                .splineToConstantHeading(scorePose2.position, Math.toRadians(beamAngle))
-                        .build();
-
-        Action scoreBreakFinalPATH = drive.actionBuilder(latestPose)
-                .setTangent(Math.toRadians(-55))
-                .splineToConstantHeading(retrievePose.position, Math.toRadians(-70))
-                .build();
-
-        Action scorePATH = drive.actionBuilder(latestPose)
-                // start at retrieval here
-                .setTangent(Math.toRadians(110))
-                .splineToConstantHeading(scorePose2.position, Math.toRadians(beamAngle))
-                .build();
 
 
-        Action scoreBackPATH = drive.actionBuilder(latestPose)
-                // start at scoring
-                .setTangent(Math.toRadians(-55))
-                .splineToConstantHeading(retrievePose.position, Math.toRadians(-70))
-                .build();
+
+
+
+
+
+
+
+
 
         /*
          * if calling finishScore immediately after, wait for 0.2 to allow servos to flip.
@@ -170,7 +136,35 @@ public class SpecimenPush extends LinearOpMode {
                         ),
                         new SleepAction(0.2),
                         finishScore,
-                        new SleepAction(0.2),
+                        updatePose(),
+                        new SleepAction(0.2)
+                )
+        );
+
+        Action drivePATH = drive.actionBuilder(latestPose)
+                // start action 1
+                .setTangent(Math.toRadians(0))
+                .splineToConstantHeading(beamPose1.position, Math.toRadians(30))
+                .splineToConstantHeading(beamPose2.position, Math.toRadians(30))
+                .splineToConstantHeading(beamCurve.position, Math.toRadians(-90))
+                .lineToYConstantHeading(pushEndPose1.position.y)
+
+                .lineToYConstantHeading(pushStartPose.position.y)
+                .splineToConstantHeading(pushCurvePose.position, Math.toRadians(0))
+                .splineToConstantHeading(pushCurvePose2.position, Math.toRadians(-90))
+                .lineToYConstantHeading(pushEndPose2.position.y)
+
+                .lineToYConstantHeading(pushStartPoseW.position.y)
+                .splineToConstantHeading(pushCurvePoseW.position, Math.toRadians(45))
+                .splineToConstantHeading(pushCurvePose2W.position, Math.toRadians(-90))
+                .lineToYConstantHeading(pushEndPose2W.position.y)
+
+                .splineToConstantHeading(mateCurve.position, Math.toRadians(-90))
+                // end action 1
+                .build();
+
+        Actions.runBlocking(
+                new SequentialAction(
                         new ParallelAction(
                                 awaitRetrieval,
                                 new SequentialAction(
@@ -182,9 +176,18 @@ public class SpecimenPush extends LinearOpMode {
 
                         // pickup 1
                         out.clawPinch.close(),
-                        new SleepAction(0.5),
-                        updatePose(), // UPDATE POSE
+                        updatePose(),
+                        new SleepAction(0.5)
+                )
+        );
 
+        Action scoreBreakPATH = drive.actionBuilder(latestPose)
+                .setTangent(Math.toRadians(150))
+                .splineToConstantHeading(scorePose2.position, Math.toRadians(beamAngle))
+                .build();
+
+        Actions.runBlocking(
+                new SequentialAction(
                         new ParallelAction(
                                 verticalSlides.verticalSlidesToPos(8),
                                 scoreBreakPATH,
@@ -195,9 +198,18 @@ public class SpecimenPush extends LinearOpMode {
                         ),
                         finishScore,
                         updatePose(), // UPDATE POSE
-                        new SleepAction(0.2),
+                        new SleepAction(0.2)
                         // score 2
+                )
+        );
 
+        Action scoreBreakFinalPATH = drive.actionBuilder(latestPose)
+                .setTangent(Math.toRadians(-55))
+                .splineToConstantHeading(retrievePose.position, Math.toRadians(-70))
+                .build();
+
+        Actions.runBlocking(
+                new SequentialAction(
                         new ParallelAction(
                                 scoreBreakFinalPATH,
                                 new SequentialAction(
@@ -207,9 +219,19 @@ public class SpecimenPush extends LinearOpMode {
                         ),
                         out.clawPinch.close(),
                         updatePose(), // UPDATE POSE
-                        new SleepAction(0.5),
+                        new SleepAction(0.5)
                         // pickup 2
+                )
+        );
 
+        Action scorePATH = drive.actionBuilder(latestPose)
+                // start at retrieval here
+                .setTangent(Math.toRadians(110))
+                .splineToConstantHeading(scorePose2.position, Math.toRadians(beamAngle))
+                .build();
+
+        Actions.runBlocking(
+                new SequentialAction(
 
                         new ParallelAction(
                                 prepScore,
@@ -217,9 +239,19 @@ public class SpecimenPush extends LinearOpMode {
                         ),
                         finishScore,
                         updatePose(), // UPDATE POSE
-                        new SleepAction(0.2),
+                        new SleepAction(0.2)
                         // score 3
+                )
+        );
 
+        Action scoreBackPATH = drive.actionBuilder(latestPose)
+                // start at scoring
+                .setTangent(Math.toRadians(-55))
+                .splineToConstantHeading(retrievePose.position, Math.toRadians(-70))
+                .build();
+
+        Actions.runBlocking(
+                new SequentialAction(
 
                         new ParallelAction(
                                 awaitRetrieval,

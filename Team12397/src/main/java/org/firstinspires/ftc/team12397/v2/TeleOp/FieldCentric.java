@@ -44,7 +44,7 @@ public class FieldCentric extends LinearOpMode {
         int pitchTimer = 0;
         boolean pitchToggle = false;
         // initialize all the hardware, using the hardware class. See how clean and simple this is?
-        robot.init();
+        robot.init(false);
 
         // Send telemetry message to signify robot waiting;
         // Wait for the game to start (driver presses START)

@@ -18,7 +18,7 @@ public class FieldCentric2 extends LinearOpMode {
 
     private final double OUTTAKE_MAX = robot.OUTTAKE_MAX;
     private final double OUTTAKE_MIN = robot.OUTTAKE_MIN;
-    private final double OUTTAKE_MID = robot.OUTTAKE_MID+0.01;
+    private final double OUTTAKE_MID = robot.OUTTAKE_MID;
 
     private final double EXTEND_MAX = robot.EXTEND_MAX;
     private final double EXTEND_MID = robot.EXTEND_MID;
@@ -34,7 +34,8 @@ public class FieldCentric2 extends LinearOpMode {
     private final double OUT_YAW_MAX = robot.OUT_YAW_MAX;
     private final double OUT_YAW_MIN = robot.OUT_YAW_MIN;
 
-    private final double SLIDE_RUNG = robot.SLIDE_RUNG;
+    private final double SLIDE_RUNG = robot.SLIDE_RUNG-1;
+    private final double SLIDE_ALT = robot.SLIDE_ALT-1;
 
     enum states{
         RETRIEVE,
@@ -94,6 +95,7 @@ public class FieldCentric2 extends LinearOpMode {
         boolean outPinchToggle = false;
 
         double OutTimer = 0;
+        double OutTimer2 = 0;
         double PinchTimer = 0;
         double dpadUpTimer = 0;
         double slideUpTimer = 0;
@@ -107,7 +109,7 @@ public class FieldCentric2 extends LinearOpMode {
 
         states currentState = states.ROAM;
 
-        robot.init();
+        robot.init(false);
 
         // Send telemetry message to signify robot waiting;
         // Wait for the game to start (driver presses START)
@@ -116,12 +118,16 @@ public class FieldCentric2 extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            drive = -gamepad1.left_stick_y;
-            strafe = gamepad1.left_stick_x;
+            if (gamepad1.left_stick_y == -1){
+                drive = 1;
+            } else {
+                drive = -gamepad1.left_stick_y * 0.7;
+            }
+            strafe = gamepad1.left_stick_x*1.1;
             turn  =  gamepad1.right_stick_x;
             robot.driveFieldCentric(drive, strafe, turn);
             if (gamepad1.right_bumper && outTakePos == robot.OUTTAKE_ALT && slide == SLIDE_RUNG){
-                slide = robot.SLIDE_ALT;
+                slide = SLIDE_ALT;
                 OutTimer = getRuntime();
             } else if (gamepad1.left_bumper && outTakePos == robot.OUTTAKE_ALT && slide == SLIDE_RUNG) {
                 slide = SLIDE_RUNG;
@@ -258,8 +264,12 @@ public class FieldCentric2 extends LinearOpMode {
 
             // TIMERS
             if (OutTimer != 0 && (getRuntime() - OutTimer) > 0.5){
-                outPinchToggle = true;
+                outPinchToggle = false;
                 OutTimer = 0;
+            }
+            if (OutTimer2 != 0 && (getRuntime() - OutTimer2) > 0.5){
+                outPinchToggle = true;
+                OutTimer2 = 0;
             }
             if (PinchTimer != 0 && (getRuntime() - PinchTimer) > 1){
                 pinchToggle = false;

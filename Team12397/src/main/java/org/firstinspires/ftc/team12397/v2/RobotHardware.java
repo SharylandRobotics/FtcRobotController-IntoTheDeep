@@ -100,7 +100,7 @@ public class RobotHardware {
      * All the hardware devices are accessed via the hardware map, and initialized.
      */
 
-    public void init() {
+    public void init(boolean imuReset) {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
         leftFrontDrive = myOpMode.hardwareMap.get(DcMotor.class, "left_front");
         leftBackDrive = myOpMode.hardwareMap.get(DcMotor.class, "left_back");
@@ -161,7 +161,12 @@ public class RobotHardware {
         inClawYaw = myOpMode.hardwareMap.get(Servo.class, "claw_yaw");
 
         imu = myOpMode.hardwareMap.get(IMU.class, "imu");
-        imu.initialize(parameters);
+
+        if (imuReset) {
+
+            imu.initialize(parameters);
+            imu.resetYaw();
+        }
 
 
 

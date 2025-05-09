@@ -35,6 +35,18 @@ public class MeepMeepAllianceTesting {
 
         double beamAngle = 130;
 
+        //Pose2d initialPose = new Pose2d(9.5, -61.25, -Math.PI / 2);
+        Pose2d SecondPose = new Pose2d(9.5, -37.9, -Math.PI / 2);
+        Pose2d ThirdPose = new Pose2d(61, -62.2, -Math.PI / 2);
+        Pose2d FourthPose = new Pose2d(5, -55, -Math.PI / 2);
+        Pose2d FifthPose = new Pose2d(5,-39.3, -Math.PI /2);
+        Pose2d sixthPose = new Pose2d(12,-39.3, -Math.PI /2);
+        Pose2d seventhPose = new Pose2d(53,-62.2, -Math.PI /2);
+
+        Pose2d eigthPose = new Pose2d(10, -39.3, -Math.PI/2);
+        Pose2d ninthPose = (seventhPose);
+        Pose2d tenthPose = new Pose2d(8, -39.3, - Math.PI/2);
+
 
 
                 /*
@@ -70,53 +82,25 @@ public class MeepMeepAllianceTesting {
 
                  */
 
-        Pose2d eigthPose = new Pose2d(10, -39.3, -Math.PI/2);
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(95, 95, 3.2, 3.6, 15.75)
                 .setDimensions(15.7,17.2)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(initialPose)
-                .setTangent(Math.toRadians(90))
-                .lineToY(scorePose.position.y)
-                // score
-
-                // start action 1
-                .setTangent(Math.toRadians(0))
-                .splineToConstantHeading(beamPose1.position, Math.toRadians(30))
-                .splineToConstantHeading(beamPose2.position, Math.toRadians(30))
-                .splineToConstantHeading(beamCurve.position, Math.toRadians(-90))
-                .lineToYConstantHeading(pushEndPose1.position.y)
-
-                .lineToYConstantHeading(pushStartPose.position.y)
-                .splineToConstantHeading(pushCurvePose.position, Math.toRadians(0))
-                .splineToConstantHeading(pushCurvePose2.position, Math.toRadians(-90))
-                .lineToYConstantHeading(pushEndPose2.position.y)
-
-                .lineToYConstantHeading(pushStartPoseW.position.y)
-                .splineToConstantHeading(pushCurvePoseW.position, Math.toRadians(45))
-                .splineToConstantHeading(pushCurvePose2W.position, Math.toRadians(-90))
-                .lineToYConstantHeading(pushEndPose2W.position.y)
-
-                .splineToConstantHeading(mateCurve.position, Math.toRadians(-90))
-                // end action 1
-
-                // start score break 1
-                .setTangent(Math.toRadians(150))
-                .splineToConstantHeading(scorePose2.position, Math.toRadians(beamAngle))
-                // break 2nd scoring here
-                        .setTangent(Math.toRadians(-55))
-                .splineToConstantHeading(retrievePose.position, Math.toRadians(-70))
-
-                // score loop
-                .setTangent(Math.toRadians(110))
-                .splineToConstantHeading(scorePose2.position, Math.toRadians(beamAngle))
-                // break scoring here
-                .setTangent(Math.toRadians(-55))
-                .splineToConstantHeading(retrievePose.position, Math.toRadians(-70))
-                // end score ACT, retrieve, repeat
-
+        myBot.runAction(myBot.getDrive().actionBuilder(SecondPose)
+                .setTangent(0)
+                .lineToX(37)
+                .setTangent(Math.PI/2)
+                .splineToConstantHeading(new Vector2d(45, -8), 0)
+                .splineToConstantHeading(new Vector2d(53, -10), Math.toRadians(-90))
+                .lineToY(-54)
+                .setTangent(Math.PI / 2)
+                .splineToConstantHeading(new Vector2d(55, -13), 0)
+                .splineToConstantHeading(new Vector2d(65, -16), Math.toRadians(-90))
+                .splineToConstantHeading(new Vector2d(68, seventhPose.position.y+10), Math.toRadians(90))
+                        .splineToConstantHeading(new Vector2d(60, seventhPose.position.y+14), Math.toRadians(165))
+                .splineToConstantHeading(new Vector2d(seventhPose.position.x, seventhPose.position.y), Math.toRadians(-90))
                 .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
