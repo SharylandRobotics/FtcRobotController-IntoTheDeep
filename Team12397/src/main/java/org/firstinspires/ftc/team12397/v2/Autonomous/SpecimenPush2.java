@@ -42,6 +42,7 @@ public class SpecimenPush2 extends LinearOpMode {
 
 
         Action tab1 = drive.actionBuilder(initialPose)
+                .setTangent(Math.PI/2)
                 .lineToY(SecondPose.position.y)
                 .build();
 
