@@ -43,14 +43,14 @@ public class RobotHardware {
     public Servo outClawYaw = null;
 
     public final double OUTTAKE_ALT = 0.125;
-    public final double OUTTAKE_BALT = 0.35;
+    public final double OUTTAKE_BALT = 0.29;
     public final double OUTTAKE_PARALLEL = 0.45;
     public final double SLIDE_ALT = 10;
     public final double OUTTAKE_MAX = 0.8;
     public final double OUTTAKE_MIN = 0.32;
     public final double OUTTAKE_MID = 0.8;
 
-    public final double EXTEND_MAX = 0.96;
+    public final double EXTEND_MAX = 0.955;
     public final double EXTEND_MID = 0.4;
     public final double EXTEND_MIN = 0;
 
@@ -65,8 +65,8 @@ public class RobotHardware {
     public final double OUT_YAW_MIN = 0.04;
 
     public final double SLIDE_RUNG = 16;
-    public final double PITCH_TRANS = 0.3;
-    public final double EXTEND_TRANS = 0.5;
+    public final double PITCH_TRANS = 0.1;
+    public final double EXTEND_TRANS = 0.4;
 
     public int leftFrontTarget;
     public int leftBackTarget;
@@ -162,9 +162,9 @@ public class RobotHardware {
 
         imu = myOpMode.hardwareMap.get(IMU.class, "imu");
 
-        if (imuReset) {
+        imu.initialize(parameters);
 
-            imu.initialize(parameters);
+        if (imuReset) {
             imu.resetYaw();
         }
 
