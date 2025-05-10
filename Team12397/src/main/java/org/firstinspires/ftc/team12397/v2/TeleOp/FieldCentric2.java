@@ -34,7 +34,7 @@ public class FieldCentric2 extends LinearOpMode {
     private final double OUT_YAW_MAX = robot.OUT_YAW_MAX;
     private final double OUT_YAW_MIN = robot.OUT_YAW_MIN;
 
-    private final double SLIDE_RUNG = robot.SLIDE_RUNG-1;
+    private final double SLIDE_RUNG = robot.SLIDE_RUNG;
     private final double SLIDE_ALT = robot.SLIDE_ALT-1;
 
     enum states{
@@ -83,7 +83,7 @@ public class FieldCentric2 extends LinearOpMode {
         double turn = 0;
 
         double inClawYaw = 0;
-        double outTakePos = OUTTAKE_MID;
+        double outTakePos = OUTTAKE_MID-0.1;
         double extendPos = 0;
         double pitchPos = 0.5;
         double outClawYaw = 0;
@@ -128,7 +128,6 @@ public class FieldCentric2 extends LinearOpMode {
             robot.driveFieldCentric(drive, strafe, turn);
             if (gamepad1.right_bumper && outTakePos == robot.OUTTAKE_ALT && slide == SLIDE_RUNG){
                 slide = SLIDE_ALT;
-                OutTimer = getRuntime();
             } else if (gamepad1.left_bumper && outTakePos == robot.OUTTAKE_ALT && slide == SLIDE_RUNG) {
                 slide = SLIDE_RUNG;
                 OutTimer = 0;
@@ -188,14 +187,14 @@ public class FieldCentric2 extends LinearOpMode {
             // right stick button retracts and sets timers in SCOREB,
             if (gamepad2.right_stick_button){
                 if (currentState == states.SCOREB){
-                    outTakePos = OUTTAKE_MID+0.05;
-                    pitchPos = robot.PITCH_TRANS+0.05;
-                    extendPos = robot.EXTEND_TRANS;
+                    outTakePos = OUTTAKE_MID+0.04;
+                    pitchPos = robot.PITCH_TRANS;
+                    extendPos = robot.EXTEND_TRANS+0.16;
                     inClawYaw = IN_YAW_MIN;
                     outClawYaw = OUT_YAW_MIN;
-                    OutTimer = getRuntime();
+                    OutTimer2 = getRuntime();
                     PinchTimer = getRuntime();
-                    // disable until above confirmed. slideUpTimer = getRuntime();
+                    slideUpTimer = getRuntime();
                 } else {
                     currentState = states.SCOREB;
                 }
@@ -240,7 +239,11 @@ public class FieldCentric2 extends LinearOpMode {
                     }
                 } else if (currentState == states.SCOREB && (getRuntime() - bTimer) > 0.25){
                     bTimer = getRuntime();
-                    if (outTakePos != robot.OUTTAKE_BALT) {
+                    if (!outPinchToggle){
+                        slide = 0;
+                        outTakePos = robot.OUTTAKE_PARALLEL;
+                        currentState = states.ROAM;
+                    } else if (outTakePos != robot.OUTTAKE_BALT) {
                         outTakePos = robot.OUTTAKE_BALT;
                         outClawYaw = 0;
                     } else if (outTakePos != robot.OUTTAKE_PARALLEL) {
@@ -256,7 +259,6 @@ public class FieldCentric2 extends LinearOpMode {
 
             if (currentState == states.RETRIEVE){
                 outClawYaw = 0;
-                outTakePos = OUTTAKE_MID;
             } else if (currentState == states.SCORE){
                 extendPos = 0;
                 pitchPos = PITCH_MIN;
