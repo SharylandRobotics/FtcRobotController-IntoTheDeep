@@ -11,76 +11,18 @@ public class MeepMeepAllianceTesting {
         MeepMeep meepMeep = new MeepMeep(700);
 
 
-        Pose2d initialPose = new Pose2d(9.5, -61.25, -Math.PI / 2);
-        Pose2d scorePose = new Pose2d(9.5, -37.9, -Math.PI / 2);
-        Pose2d beamPose1 = new Pose2d(32, -36, -Math.PI / 2);
-        Pose2d beamPose2 = new Pose2d(40, -18, -Math.PI / 2);
-        Pose2d beamCurve = new Pose2d(48,-19, -Math.PI /2);
-        Pose2d pushEndPose1 = new Pose2d(48,-50, -Math.PI /2);
-
-        Pose2d pushStartPose = new Pose2d(53, -24, -Math.PI/2);
-        Pose2d pushCurvePose = new Pose2d(54, -16.5, -Math.PI / 2);
-        Pose2d pushCurvePose2 = new Pose2d(58, -18, -Math.PI/2);
-        Pose2d pushEndPose2 = new Pose2d(58,-50, -Math.PI /2);
-
-        Pose2d pushStartPoseW = new Pose2d(58, -22, -Math.PI/2);
-        Pose2d pushCurvePoseW = new Pose2d(59, -14, -Math.PI / 2);
-        Pose2d pushCurvePose2W = new Pose2d(62, -13, -Math.PI/2);
-        Pose2d pushEndPose2W = new Pose2d(62,-48, -Math.PI /2);
-
-        Pose2d mateCurve = new Pose2d(58, -61.25, -Math.PI/2);
-
-        Pose2d scorePose2 = new Pose2d(9.5, -37.9, -Math.PI/2);
-        Pose2d retrievePose = new Pose2d(36, -61.25, -Math.PI/2);
-
-        double beamAngle = 130;
-
-        //Pose2d initialPose = new Pose2d(9.5, -61.25, -Math.PI / 2);
-        Pose2d SecondPose = new Pose2d(9.5, -37.9, -Math.PI / 2);
-        Pose2d ThirdPose = new Pose2d(61, -62.2, -Math.PI / 2);
-        Pose2d FourthPose = new Pose2d(5, -55, -Math.PI / 2);
-        Pose2d FifthPose = new Pose2d(5,-39.3, -Math.PI /2);
-        Pose2d sixthPose = new Pose2d(12,-39.3, -Math.PI /2);
-        Pose2d seventhPose = new Pose2d(53,-62.2, -Math.PI /2);
-
-        Pose2d eigthPose = new Pose2d(10, -39.3, -Math.PI/2);
-        Pose2d ninthPose = (seventhPose);
-        Pose2d tenthPose = new Pose2d(8, -39.3, - Math.PI/2);
+        Pose2d initialPose = new Pose2d(-31, -61, 0);
 
 
 
-                /*
+        Pose2d initialRungPose = new Pose2d(initialPose.position.x, -35.75 + 12, -Math.PI / 2);
+
+        Pose2d swerveBeamPose = new Pose2d(initialRungPose.position.x + 25.05 + 9, initialRungPose.position.y + 2.875, -Math.PI / 2);
+        Pose2d swerveBeamPose2 = new Pose2d(swerveBeamPose.position.x + 2.125 + 5, swerveBeamPose.position.y + 20.5, -Math.PI / 2);
+        Pose2d sample1Pose = new Pose2d(swerveBeamPose2.position.x + 11.625, swerveBeamPose2.position.y - 19.375, -Math.PI / 2);
 
 
 
-
-
-        Action tab4 = drive.actionBuilder(FourthPose)
-                .setTangent(Math.PI / 2)
-                .lineToY(FifthPose.position.y)
-                .build();
-
-        Action tab5 = drive.actionBuilder(FifthPose)
-                .setTangent(0)
-                .lineToX(sixthPose.position.x)
-
-
-                .build();
-
-        Action tab6 = drive.actionBuilder(sixthPose)
-                .splineToConstantHeading(new Vector2d(seventhPose.position.x, seventhPose.position.y), 0)
-                .build();
-
-        Action tab7 = drive.actionBuilder(seventhPose)
-
-
-                .setTangent(0)
-                .lineToX(4.5)
-                .setTangent(Math.PI/2)
-                .lineToY(-27)
-                .build();
-
-                 */
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
@@ -88,20 +30,16 @@ public class MeepMeepAllianceTesting {
                 .setDimensions(15.7,17.2)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(SecondPose)
-                .setTangent(0)
-                .lineToX(37)
-                .setTangent(Math.PI/2)
-                .splineToConstantHeading(new Vector2d(45, -8), 0)
-                .splineToConstantHeading(new Vector2d(53, -10), Math.toRadians(-90))
-                .lineToY(-54)
-                .setTangent(Math.PI / 2)
-                .splineToConstantHeading(new Vector2d(55, -13), 0)
-                .splineToConstantHeading(new Vector2d(65, -16), Math.toRadians(-90))
-                .splineToConstantHeading(new Vector2d(68, seventhPose.position.y+10), Math.toRadians(90))
-                        .splineToConstantHeading(new Vector2d(60, seventhPose.position.y+14), Math.toRadians(165))
-                .splineToConstantHeading(new Vector2d(seventhPose.position.x, seventhPose.position.y), Math.toRadians(-90))
+        myBot.runAction(myBot.getDrive().actionBuilder(initialPose)
+                .splineToLinearHeading(new Pose2d(-53,-54,Math.PI/4),Math.PI/9)
+                .splineToLinearHeading(new Pose2d(-42, -53, Math.PI/2), Math.PI / 2)
+                .splineToLinearHeading(new Pose2d(-49,-62,Math.PI/4),Math.PI/2)
+                .splineToLinearHeading(new Pose2d(-52, -52, Math.PI/2), Math.PI / 2)
+                .splineToLinearHeading(new Pose2d(-49,-62,Math.PI/4),Math.PI/2)
+
                 .build());
+
+
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
                 .setDarkMode(true)

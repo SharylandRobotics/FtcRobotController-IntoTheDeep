@@ -24,7 +24,7 @@ public class FieldCentric2 extends LinearOpMode {
     private final double EXTEND_MID = robot.EXTEND_MID;
     private final double EXTEND_MIN = robot.EXTEND_MIN;
 
-    private final double PITCH_MAX = robot.PITCH_MAX;
+    private final double PITCH_MAX = robot.PITCH_MAX-0.025;
     private final double PITCH_MID = robot.PITCH_MID;
     private final double PITCH_MIN = robot.PITCH_MIN;
 
@@ -34,8 +34,8 @@ public class FieldCentric2 extends LinearOpMode {
     private final double OUT_YAW_MAX = robot.OUT_YAW_MAX;
     private final double OUT_YAW_MIN = robot.OUT_YAW_MIN;
 
-    private final double SLIDE_RUNG = robot.SLIDE_RUNG;
-    private final double SLIDE_ALT = robot.SLIDE_ALT-1;
+    private final double SLIDE_RUNG = robot.SLIDE_RUNG+0.5;
+    private final double SLIDE_ALT = robot.SLIDE_ALT;
 
     enum states{
         RETRIEVE,
@@ -109,7 +109,7 @@ public class FieldCentric2 extends LinearOpMode {
 
         states currentState = states.ROAM;
 
-        robot.init(false);
+        robot.init(true);
 
         // Send telemetry message to signify robot waiting;
         // Wait for the game to start (driver presses START)
@@ -118,13 +118,13 @@ public class FieldCentric2 extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            if (gamepad1.left_stick_y == -1){
+            if (gamepad1.left_stick_y == 1){
                 drive = 1;
             } else {
-                drive = -gamepad1.left_stick_y * 0.7;
+                drive = gamepad1.left_stick_y * 0.7;
             }
-            strafe = gamepad1.left_stick_x*1.1;
-            turn  =  gamepad1.right_stick_x;
+            strafe = -gamepad1.left_stick_x*1.1;
+            turn  =   gamepad1.right_stick_x;
             robot.driveFieldCentric(drive, strafe, turn);
             if (gamepad1.right_bumper && outTakePos == robot.OUTTAKE_ALT && slide == SLIDE_RUNG){
                 slide = SLIDE_ALT;

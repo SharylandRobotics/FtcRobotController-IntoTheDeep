@@ -109,11 +109,11 @@ public class SpecimenPush2 extends LinearOpMode {
 
         Action tab11 = drive.actionBuilder(seventhPose)
                         .setTangent(Math.toRadians(-45))
-                                .splineToLinearHeading(new Pose2d(seventhPose.position.x, seventhPose.position.y, Math.toRadians(-45)), Math.toRadians(-45)
-                                , new TranslationalVelConstraint(100))
+                                .splineToLinearHeading(new Pose2d(seventhPose.position.x+3, seventhPose.position.y-3, Math.toRadians(-45)), Math.toRadians(-45)
+                                , new TranslationalVelConstraint(120))
                                         .build();
 
-        robot.init(true);
+        robot.init(false);
 
         RoadRunnerActions.In in = actionLib.new In();
         RoadRunnerActions.Out out = actionLib.new Out();
@@ -207,7 +207,7 @@ public class SpecimenPush2 extends LinearOpMode {
                         new ParallelAction(
                                 verticalSlides.verticalSlidesToPos(robot.SLIDE_ALT),
                                 new SequentialAction(
-                                        new SleepAction(1),
+                                        new SleepAction(0.7),
                                         out.clawPinch.open()
                                 )
                         ),
@@ -232,7 +232,7 @@ public class SpecimenPush2 extends LinearOpMode {
                         new ParallelAction(
                             verticalSlides.verticalSlidesToPos(robot.SLIDE_ALT),
                             new SequentialAction(
-                                    new SleepAction(1),
+                                    new SleepAction(0.7),
                                     out.clawPinch.open()
                             )
                         ),

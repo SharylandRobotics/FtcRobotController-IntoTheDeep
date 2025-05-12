@@ -42,10 +42,10 @@ public class RobotHardware {
     private Servo inClawYaw = null;
     public Servo outClawYaw = null;
 
-    public final double OUTTAKE_ALT = 0.125;
+    public final double OUTTAKE_ALT = 0.12;
     public final double OUTTAKE_BALT = 0.29;
     public final double OUTTAKE_PARALLEL = 0.45;
-    public final double SLIDE_ALT = 10;
+    public final double SLIDE_ALT = 9;
     public final double OUTTAKE_MAX = 0.8;
     public final double OUTTAKE_MIN = 0.32;
     public final double OUTTAKE_MID = 0.8;
@@ -91,6 +91,10 @@ public class RobotHardware {
             RevHubOrientationOnRobot.UsbFacingDirection.RIGHT));
 
 
+    IMU.Parameters TeleOpParameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+            RevHubOrientationOnRobot.LogoFacingDirection.UP,
+            RevHubOrientationOnRobot.UsbFacingDirection.LEFT));
+
     public RobotHardware(LinearOpMode OpMode) {myOpMode = OpMode;}
 
     /**
@@ -100,7 +104,7 @@ public class RobotHardware {
      * All the hardware devices are accessed via the hardware map, and initialized.
      */
 
-    public void init(boolean imuReset) {
+    public void init(boolean teleOp) {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
         leftFrontDrive = myOpMode.hardwareMap.get(DcMotor.class, "left_front");
         leftBackDrive = myOpMode.hardwareMap.get(DcMotor.class, "left_back");
@@ -163,14 +167,17 @@ public class RobotHardware {
         imu = myOpMode.hardwareMap.get(IMU.class, "imu");
 
         imu.initialize(parameters);
+        imu.resetYaw();
 
-        if (imuReset) {
+        if (teleOp) {
+            imu.initialize(TeleOpParameters);
             imu.resetYaw();
         }
 
 
 
         myOpMode.telemetry.addData(">", "Hardware Initialized");
+        myOpMode.telemetry.addData("Heading: ", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
         myOpMode.telemetry.update();
     }
 
