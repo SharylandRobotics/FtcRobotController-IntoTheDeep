@@ -47,6 +47,7 @@ public class SpecimenPush extends LinearOpMode {
 
                 out.clawPinch.close(),
                 out.clawYaw.defaultYaw(),
+
                 out.takePosition.custom(robot.OUTTAKE_MID-0.1),
 
                 verticalSlides.verticalSlidesToPos(0),
@@ -83,17 +84,6 @@ public class SpecimenPush extends LinearOpMode {
                 // score
                 .build();
 
-
-
-
-
-
-
-
-
-
-
-
         /*
          * if calling finishScore immediately after, wait for 0.2 to allow servos to flip.
          * Adjust correctly to pathing times.
@@ -120,8 +110,6 @@ public class SpecimenPush extends LinearOpMode {
                 out.clawYaw.defaultYaw(),
                 verticalSlides.verticalSlidesToPos(0)
         );
-
-
 
         waitForStart();
 
@@ -310,6 +298,4 @@ public class SpecimenPush extends LinearOpMode {
             return false;
         };
     }
-
-
 }

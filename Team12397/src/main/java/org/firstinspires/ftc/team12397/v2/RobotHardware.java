@@ -68,10 +68,9 @@ public class RobotHardware {
     public final double PITCH_TRANS = 0.1;
     public final double EXTEND_TRANS = 0.4;
 
-    public int leftFrontTarget;
-    public int leftBackTarget;
-    public int rightFrontTarget;
-    public int rightBackTarget;
+    public final double OUTTAKE_MAX = 0.8;
+    public final double OUTTAKE_MIN = 0.32;
+    public final double OUTTAKE_MID = 0.8;
 
     // ticks
     public double COUNTS_PER_MOTOR_REV = 537.7;
@@ -90,6 +89,9 @@ public class RobotHardware {
             RevHubOrientationOnRobot.LogoFacingDirection.UP,
             RevHubOrientationOnRobot.UsbFacingDirection.RIGHT));
 
+    public final double PITCH_MAX = 1;
+    public final double PITCH_MID = 0.65;
+    public final double PITCH_MIN = 0.15;
 
     IMU.Parameters TeleOpParameters = new IMU.Parameters(new RevHubOrientationOnRobot(
             RevHubOrientationOnRobot.LogoFacingDirection.UP,
@@ -363,7 +365,6 @@ public class RobotHardware {
         // 1 is down, 0.3 is passing
     }
 
-
     /**
      *
      * @param position 1 is all the way back, 0 is the other way.
@@ -422,6 +423,7 @@ public class RobotHardware {
     public void setOutClawPinch(double pos){
         if (pos == 1) {
             outClawPinch.setPosition(0.38);
+
         } else {
             outClawPinch.setPosition(0);
         }

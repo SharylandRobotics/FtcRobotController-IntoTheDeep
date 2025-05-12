@@ -79,8 +79,6 @@ public class FieldCentric extends LinearOpMode {
             }
             robot.setInClawPinch(inClawPinch);
 
-
-
             if (gamepad2.dpad_left){
                 if (pitchTimer >= 4) {
                     pitchToggle = !pitchToggle;
@@ -138,16 +136,13 @@ public class FieldCentric extends LinearOpMode {
                 inClawPitch = -1; pitchToggle = false;
                 // servo to transfer tuck in pitch yaw to 0
             }
-
-
+          
             //moves vertical slides
             if(-gamepad2.right_stick_y == 1) {
                 slide = 1.5*robot.TICKS_PER_INCH;
             }if (-gamepad2.right_stick_y == -1){
                 slide = 0;
             }
-
-
 
 
             if (gamepad2.dpad_right) {

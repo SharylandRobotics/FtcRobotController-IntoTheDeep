@@ -111,6 +111,7 @@ public class FieldCentric2 extends LinearOpMode {
 
         robot.init(true);
 
+
         // Send telemetry message to signify robot waiting;
         // Wait for the game to start (driver presses START)
         waitForStart();
