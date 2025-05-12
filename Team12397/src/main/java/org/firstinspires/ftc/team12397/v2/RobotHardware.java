@@ -42,11 +42,15 @@ public class RobotHardware {
     private Servo inClawYaw = null;
     public Servo outClawYaw = null;
 
+    public final double OUTTAKE_ALT = 0.12;
+    public final double OUTTAKE_BALT = 0.29;
+    public final double OUTTAKE_PARALLEL = 0.45;
+    public final double SLIDE_ALT = 9;
     public final double OUTTAKE_MAX = 0.8;
     public final double OUTTAKE_MIN = 0.32;
     public final double OUTTAKE_MID = 0.8;
 
-    public final double EXTEND_MAX = 1;
+    public final double EXTEND_MAX = 0.955;
     public final double EXTEND_MID = 0.4;
     public final double EXTEND_MIN = 0;
 
@@ -60,12 +64,13 @@ public class RobotHardware {
     public final double OUT_YAW_MAX = 0.7;
     public final double OUT_YAW_MIN = 0.04;
 
-    public final double SLIDE_RUNG = 1.5;
+    public final double SLIDE_RUNG = 16;
+    public final double PITCH_TRANS = 0.1;
+    public final double EXTEND_TRANS = 0.4;
 
-    public int leftFrontTarget;
-    public int leftBackTarget;
-    public int rightFrontTarget;
-    public int rightBackTarget;
+    public final double OUTTAKE_MAX = 0.8;
+    public final double OUTTAKE_MIN = 0.32;
+    public final double OUTTAKE_MID = 0.8;
 
     // ticks
     public double COUNTS_PER_MOTOR_REV = 537.7;
@@ -84,6 +89,13 @@ public class RobotHardware {
             RevHubOrientationOnRobot.LogoFacingDirection.UP,
             RevHubOrientationOnRobot.UsbFacingDirection.RIGHT));
 
+    public final double PITCH_MAX = 1;
+    public final double PITCH_MID = 0.65;
+    public final double PITCH_MIN = 0.15;
+
+    IMU.Parameters TeleOpParameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+            RevHubOrientationOnRobot.LogoFacingDirection.UP,
+            RevHubOrientationOnRobot.UsbFacingDirection.LEFT));
 
     public RobotHardware(LinearOpMode OpMode) {myOpMode = OpMode;}
 
@@ -94,7 +106,7 @@ public class RobotHardware {
      * All the hardware devices are accessed via the hardware map, and initialized.
      */
 
-    public void init() {
+    public void init(boolean teleOp) {
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
         leftFrontDrive = myOpMode.hardwareMap.get(DcMotor.class, "left_front");
         leftBackDrive = myOpMode.hardwareMap.get(DcMotor.class, "left_back");
@@ -155,11 +167,19 @@ public class RobotHardware {
         inClawYaw = myOpMode.hardwareMap.get(Servo.class, "claw_yaw");
 
         imu = myOpMode.hardwareMap.get(IMU.class, "imu");
+
         imu.initialize(parameters);
+        imu.resetYaw();
+
+        if (teleOp) {
+            imu.initialize(TeleOpParameters);
+            imu.resetYaw();
+        }
 
 
 
         myOpMode.telemetry.addData(">", "Hardware Initialized");
+        myOpMode.telemetry.addData("Heading: ", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
         myOpMode.telemetry.update();
     }
 
@@ -321,7 +341,7 @@ public class RobotHardware {
      */
     public void setExtensionPos(double position){
         //whatever value you subtract from lextend should be added to rextend and vise versa
-        position = Math.min(1, position);
+        position = Math.min(EXTEND_MAX, position);
         position = Math.max(0, position);
 
         lExtend.setPosition(1 - (position*0.25));
@@ -344,7 +364,6 @@ public class RobotHardware {
         }
         // 1 is down, 0.3 is passing
     }
-
 
     /**
      *
@@ -403,7 +422,8 @@ public class RobotHardware {
      */
     public void setOutClawPinch(double pos){
         if (pos == 1) {
-            outClawPinch.setPosition(0.36);
+            outClawPinch.setPosition(0.38);
+
         } else {
             outClawPinch.setPosition(0);
         }

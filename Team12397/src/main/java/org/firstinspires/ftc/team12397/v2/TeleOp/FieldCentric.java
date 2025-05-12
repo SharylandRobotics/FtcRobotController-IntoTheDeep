@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.team12397.v2.TeleOp;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.team12397.v2.RobotHardware;
 
-
+@Disabled
 @TeleOp(name="Robot Centric (Duo)", group="Robot")
 
 public class FieldCentric extends LinearOpMode {
@@ -43,7 +44,7 @@ public class FieldCentric extends LinearOpMode {
         int pitchTimer = 0;
         boolean pitchToggle = false;
         // initialize all the hardware, using the hardware class. See how clean and simple this is?
-        robot.init();
+        robot.init(false);
 
         // Send telemetry message to signify robot waiting;
         // Wait for the game to start (driver presses START)
@@ -77,8 +78,6 @@ public class FieldCentric extends LinearOpMode {
                 inClawPinch = 0;
             }
             robot.setInClawPinch(inClawPinch);
-
-
 
             if (gamepad2.dpad_left){
                 if (pitchTimer >= 4) {
@@ -137,16 +136,13 @@ public class FieldCentric extends LinearOpMode {
                 inClawPitch = -1; pitchToggle = false;
                 // servo to transfer tuck in pitch yaw to 0
             }
-
-
+          
             //moves vertical slides
             if(-gamepad2.right_stick_y == 1) {
                 slide = 1.5*robot.TICKS_PER_INCH;
             }if (-gamepad2.right_stick_y == -1){
                 slide = 0;
             }
-
-
 
 
             if (gamepad2.dpad_right) {
