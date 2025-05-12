@@ -334,8 +334,8 @@ public class RobotHardware {
             rightOutTake.setPosition(.66);
         }else if (power == 0){
             // y is pressed
-            leftOutTake.setPosition(.622);
-            rightOutTake.setPosition(.378);
+            leftOutTake.setPosition(.632);
+            rightOutTake.setPosition(.348);
         }else if (power == 2){
             leftOutTake.setPosition(.9);
             rightOutTake.setPosition(0.1);
